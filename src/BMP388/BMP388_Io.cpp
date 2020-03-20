@@ -42,6 +42,18 @@ uint8_t BMP388_Io::read(Register const reg)
   _deselect();
 }
 
+void BMP388_Io::read(Register const reg, uint8_t * data, uint8_t const len)
+{
+  uint8_t const reg_addr = 0x80 | to_integer(reg);
+
+  _select();
+  _transfer(reg_addr);
+  for(uint8_t b = 0; b < len; b++) {
+    data[b] = _transfer(0);
+  }
+  _deselect();
+}
+
 void BMP388_Io::write(Register const reg, uint8_t const val)
 {
   uint8_t const reg_addr = to_integer(reg);

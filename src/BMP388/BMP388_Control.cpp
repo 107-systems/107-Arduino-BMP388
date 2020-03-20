@@ -7,24 +7,21 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "ArduinoBMP388.h"
+#include "BMP388_Control.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-using namespace BMP388;
+namespace BMP388
+{
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
-                             SpiDeselectFunc deselect,
-                             SpiTransferFunc transfer)
-: _io{select, deselect, transfer}
-, _config{_io}
-, _control{_io}
+BMP388_Control::BMP388_Control(BMP388_Io & io)
+: _io{io}
 {
 
 }
@@ -33,16 +30,13 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ArduinoBMP388::begin()
+void BMP388_Control::readRawData(RawSensorData & data)
 {
-  _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
-  _config.configIntPinLevel(IntPinLevel::ActiveLow);
-  _config.enableDataReadyInt();
+  _io.read(Register::DATA, data.buf, sizeof(data.buf));
 }
 
-void ArduinoBMP388::onExternalEventHandler()
-{
-  RawSensorData raw_data;
-  _control.readRawData(raw_data);
-  /* TODO - convert to physical units */
-}
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* BMP388 */

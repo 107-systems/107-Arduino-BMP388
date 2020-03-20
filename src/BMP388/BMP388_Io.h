@@ -43,6 +43,7 @@ public:
 
 
   uint8_t read  (Register const reg);
+  void    read  (Register const reg, uint8_t * data, uint8_t const len);
   void    write (Register const reg, uint8_t const val);
   void    modify(Register const reg, uint8_t const bitmask, uint8_t const val);
 

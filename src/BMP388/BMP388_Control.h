@@ -3,46 +3,64 @@
  * @license LGPL 3.0
  */
 
+#ifndef ARDUINO_BMP388_BMP388_CONTROL_H_
+#define ARDUINO_BMP388_BMP388_CONTROL_H_
+
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include "ArduinoBMP388.h"
+#include "BMP388_Io.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-using namespace BMP388;
+namespace BMP388
+{
 
 /**************************************************************************************
- * CTOR/DTOR
+ * TYPEDEF
  **************************************************************************************/
 
-ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
-                             SpiDeselectFunc deselect,
-                             SpiTransferFunc transfer)
-: _io{select, deselect, transfer}
-, _config{_io}
-, _control{_io}
+union RawSensorData
 {
-
-}
+  struct
+  {
+    uint8_t pres_msb;
+    uint8_t pres_lsb;
+    uint8_t pres_xlsb;
+    uint8_t temp_msb;
+    uint8_t temp_lsb;
+    uint8_t temp_xlsb;
+  } reg;
+  uint8_t buf[6];
+};
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void ArduinoBMP388::begin()
+class BMP388_Control
 {
-  _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
-  _config.configIntPinLevel(IntPinLevel::ActiveLow);
-  _config.enableDataReadyInt();
-}
+public:
 
-void ArduinoBMP388::onExternalEventHandler()
-{
-  RawSensorData raw_data;
-  _control.readRawData(raw_data);
-  /* TODO - convert to physical units */
-}
+  BMP388_Control(BMP388_Io & io);
+
+
+  void readRawData(RawSensorData & data);
+
+
+private:
+
+  BMP388_Io & _io;
+
+};
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* BMP388 */
+
+#endif /* ARDUINO_BMP388_BMP388_CONTROL_H_ */

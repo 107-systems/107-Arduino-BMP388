@@ -12,6 +12,7 @@
 
 #include "BMP388/BMP388_Io.h"
 #include "BMP388/BMP388_Config.h"
+#include "BMP388/BMP388_Control.h"
 
 /**************************************************************************************
  * CONSTANTS
@@ -43,6 +44,7 @@ private:
 
   BMP388::BMP388_Io _io;
   BMP388::BMP388_Config _config;
+  BMP388::BMP388_Control _control;
 
 };
 
