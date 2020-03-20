@@ -52,6 +52,14 @@ void BMP388_Io::write(Register const reg, uint8_t const val)
   _deselect();
 }
 
+void BMP388_Io::modify(Register const reg, uint8_t const bitmask, uint8_t const val)
+{
+  uint8_t reg_val = read(reg);
+  reg_val &= ~(bitmask);
+  reg_val |= (val & bitmask);
+  write(reg, reg_val);
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

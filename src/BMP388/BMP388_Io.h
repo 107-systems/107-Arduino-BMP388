@@ -42,8 +42,9 @@ public:
   BMP388_Io(SpiSelectFunc select, SpiDeselectFunc deselect, SpiTransferFunc transfer);
 
 
-  uint8_t read (Register const reg);
-  void    write(Register const reg, uint8_t const val);
+  uint8_t read  (Register const reg);
+  void    write (Register const reg, uint8_t const val);
+  void    modify(Register const reg, uint8_t const bitmask, uint8_t const val);
 
 
 private:
