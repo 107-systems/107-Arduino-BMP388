@@ -3,41 +3,56 @@
  * @license LGPL 3.0
  */
 
+#ifndef ARDUINO_BMP388_BMP388_CONFIG_H_
+#define ARDUINO_BMP388_BMP388_CONFIG_H_
+
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include "ArduinoBMP388.h"
+#include "BMP388_Io.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-using namespace BMP388;
+namespace BMP388
+{
 
 /**************************************************************************************
- * CTOR/DTOR
+ * TYPEDEF
  **************************************************************************************/
 
-ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
-                             SpiDeselectFunc deselect,
-                             SpiTransferFunc transfer)
-: _io{select, deselect, transfer}
-, _config{_io}
+enum class IntPinOutputType
 {
-
-}
+  PushPull,
+  OpenDrain
+};
 
 /**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
+ * CLASS DECLARATION
  **************************************************************************************/
 
-void ArduinoBMP388::begin()
+class BMP388_Config
 {
-  _config.configIntPinOutputType(IntPinOutputType::PushPull);
-}
+public:
 
-void ArduinoBMP388::onExternalEventHandler()
-{
+  BMP388_Config(BMP388_Io & io);
 
-}
+
+  void configIntPinOutputType(IntPinOutputType const type);
+
+
+private:
+
+  BMP388_Io & _io;
+
+};
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* BMP388 */
+
+#endif /* ARDUINO_BMP388_BMP388_CONFIG_H_ */

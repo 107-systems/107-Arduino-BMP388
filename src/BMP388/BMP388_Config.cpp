@@ -7,23 +7,21 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "ArduinoBMP388.h"
+#include "BMP388_Config.h"
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
-using namespace BMP388;
+namespace BMP388
+{
 
 /**************************************************************************************
  * CTOR/DTOR
  **************************************************************************************/
 
-ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
-                             SpiDeselectFunc deselect,
-                             SpiTransferFunc transfer)
-: _io{select, deselect, transfer}
-, _config{_io}
+BMP388_Config::BMP388_Config(BMP388_Io & io)
+: _io{io}
 {
 
 }
@@ -32,12 +30,15 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ArduinoBMP388::begin()
+void BMP388_Config::configIntPinOutputType(IntPinOutputType const type)
 {
-  _config.configIntPinOutputType(IntPinOutputType::PushPull);
+  uint8_t const reg_val = (type == IntPinOutputType::OpenDrain) ? bm(INT_CTRL::OD) : 0;
+  uint8_t const reg_mask = bm(INT_CTRL::OD);
+  _io.modify(Register::INT_CTRL, reg_mask, reg_val);
 }
 
-void ArduinoBMP388::onExternalEventHandler()
-{
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
 
-}
+} /* BMP388 */
