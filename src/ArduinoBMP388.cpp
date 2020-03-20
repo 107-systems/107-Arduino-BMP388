@@ -35,6 +35,8 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
 
 void ArduinoBMP388::begin()
 {
+  _control.reset();
+
   _config.configPowerMode(PowerMode::Normal);
 
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);

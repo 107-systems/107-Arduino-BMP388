@@ -9,6 +9,8 @@
 
 #include "BMP388_Control.h"
 
+#include <Arduino.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -29,6 +31,12 @@ BMP388_Control::BMP388_Control(BMP388_Io & io)
 /**************************************************************************************
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
+
+void BMP388_Control::reset()
+{
+  _io.write(Register::CMD, to_integer(CMD::SOFT_RESET));
+  delay(10);
+}
 
 void BMP388_Control::readRawData(RawSensorData & data)
 {

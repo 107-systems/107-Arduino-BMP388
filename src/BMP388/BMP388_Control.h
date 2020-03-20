@@ -47,7 +47,7 @@ public:
 
   BMP388_Control(BMP388_Io & io);
 
-
+  void reset      ();
   void readRawData(RawSensorData & data);
 
 
