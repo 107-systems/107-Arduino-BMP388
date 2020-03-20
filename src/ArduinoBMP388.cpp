@@ -36,6 +36,7 @@ void ArduinoBMP388::begin()
 {
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
   _config.configIntPinLevel(IntPinLevel::ActiveLow);
+  _config.enableDataReadyInt();
 }
 
 void ArduinoBMP388::onExternalEventHandler()

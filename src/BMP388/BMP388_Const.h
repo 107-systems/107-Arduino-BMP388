@@ -46,8 +46,9 @@ enum class Register : uint8_t
 
 enum class INT_CTRL : uint8_t
 {
-  LEVEL = 1,
-  OD    = 0
+  DRDY_EN   = 6,
+  INT_LEVEL = 1,
+  INT_OD    = 0
 };
 
 /**************************************************************************************
