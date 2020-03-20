@@ -25,23 +25,23 @@ namespace BMP388
 
 enum class Register : uint8_t
 {
-  CHIP_ID 	      = 0x00,
-  ERR_REG 	      = 0x02,
+  CHIP_ID         = 0x00,
+  ERR_REG         = 0x02,
   SENS_STATUS_REG = 0x03,
-  DATA 	          = 0x04,
-  EVENT 	        = 0x10,
+  DATA            = 0x04,
+  EVENT           = 0x10,
   INT_STATUS_REG  = 0x11,
-  FIFO_LENGTH 	  = 0x12,
-  FIFO_DATA 	    = 0x14,
-  FIFO_WM 	      = 0x15,
+  FIFO_LENGTH     = 0x12,
+  FIFO_DATA       = 0x14,
+  FIFO_WM         = 0x15,
   FIFO_CONFIG_1   = 0x17,
   FIFO_CONFIG_2   = 0x18,
-  INT_CTRL      	= 0x19,
-  IF_CONF 	      = 0x1A,
-  PWR_CTRL 	      = 0x1B,
-  OSR 		        = 0X1C,
-  CALIB_DATA 	    = 0x31,
-  CMD 		        = 0x7E,
+  INT_CTRL        = 0x19,
+  IF_CONF         = 0x1A,
+  PWR_CTRL        = 0x1B,
+  OSR             = 0X1C,
+  CALIB_DATA      = 0x31,
+  CMD             = 0x7E,
 };
 
 /**************************************************************************************
