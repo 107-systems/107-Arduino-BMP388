@@ -29,6 +29,12 @@ enum class IntPinOutputType
   OpenDrain
 };
 
+enum class IntPinLevel
+{
+  ActiveLow,
+  ActiveHigh
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -41,6 +47,7 @@ public:
 
 
   void configIntPinOutputType(IntPinOutputType const type);
+  void configIntPinLevel     (IntPinLevel const level);
 
 
 private:

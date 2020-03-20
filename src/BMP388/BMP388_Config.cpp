@@ -37,6 +37,13 @@ void BMP388_Config::configIntPinOutputType(IntPinOutputType const type)
   _io.modify(Register::INT_CTRL, reg_mask, reg_val);
 }
 
+void BMP388_Config::configIntPinLevel(IntPinLevel const level)
+{
+  uint8_t const reg_val = (level == IntPinLevel::ActiveHigh) ? bm(INT_CTRL::LEVEL) : 0;
+  uint8_t const reg_mask = bm(INT_CTRL::LEVEL);
+  _io.modify(Register::INT_CTRL, reg_mask, reg_val);
+}
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/

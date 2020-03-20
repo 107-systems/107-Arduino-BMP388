@@ -34,7 +34,8 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
 
 void ArduinoBMP388::begin()
 {
-  _config.configIntPinOutputType(IntPinOutputType::PushPull);
+  _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
+  _config.configIntPinLevel(IntPinLevel::ActiveLow);
 }
 
 void ArduinoBMP388::onExternalEventHandler()
