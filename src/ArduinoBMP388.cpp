@@ -35,9 +35,14 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
 
 void ArduinoBMP388::begin()
 {
+  _config.configPowerMode(PowerMode::Normal);
+
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
   _config.configIntPinLevel(IntPinLevel::ActiveLow);
   _config.enableDataReadyInt();
+
+  _config.enablePressure();
+  _config.enableTemperature();
 }
 
 void ArduinoBMP388::onExternalEventHandler()

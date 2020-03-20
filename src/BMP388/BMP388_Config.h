@@ -35,6 +35,12 @@ enum class IntPinLevel
   ActiveHigh
 };
 
+enum class PowerMode : uint8_t
+{
+  Sleep  = 0,
+  Normal = bm(PWR_CTRL::MODE_1) | bm(PWR_CTRL::MODE_0)
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -49,6 +55,9 @@ public:
   void configIntPinOutputType(IntPinOutputType const type);
   void configIntPinLevel     (IntPinLevel const level);
   void enableDataReadyInt    ();
+  void enablePressure        ();
+  void enableTemperature     ();
+  void configPowerMode       (PowerMode const mode);
 
 
 private:
