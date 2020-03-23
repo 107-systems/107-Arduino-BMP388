@@ -25,14 +25,14 @@ namespace BMP388
 
 enum class IntPinOutputType
 {
-  PushPull,
-  OpenDrain
+  PushPull  = 0,
+  OpenDrain = bm(INT_CTRL::INT_OD)
 };
 
 enum class IntPinLevel
 {
-  ActiveLow,
-  ActiveHigh
+  ActiveLow  = 0,
+  ActiveHigh = bm(INT_CTRL::INT_LEVEL)
 };
 
 enum class PowerMode : uint8_t
