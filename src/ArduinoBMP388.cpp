@@ -21,10 +21,12 @@ using namespace BMP388;
 
 ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
                              SpiDeselectFunc deselect,
-                             SpiTransferFunc transfer)
+                             SpiTransferFunc transfer,
+                             OnSensorDataFunc on_sensor_data)
 : _io{select, deselect, transfer}
 , _config{_io}
 , _control{_io}
+, _on_sensor_data{on_sensor_data}
 {
 
 }
@@ -51,5 +53,12 @@ void ArduinoBMP388::onExternalEventHandler()
 {
   RawSensorData raw_data;
   _control.readRawData(raw_data);
+
   /* TODO - convert to physical units */
+  float const pressure_hpa = 0.0f;
+  float const temperature_deg = 0.0f;
+
+  if(_on_sensor_data) {
+    _on_sensor_data(pressure_hpa, temperature_deg);
+  }
 }

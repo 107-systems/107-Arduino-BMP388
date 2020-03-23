@@ -10,9 +10,19 @@
  * INCLUDE
  **************************************************************************************/
 
+#undef max
+#undef min
+#include <functional>
+
 #include "BMP388/BMP388_Io.h"
 #include "BMP388/BMP388_Config.h"
 #include "BMP388/BMP388_Control.h"
+
+/**************************************************************************************
+ * TYPEDEF
+ **************************************************************************************/
+
+typedef std::function<void(float const, float const)> OnSensorDataFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -24,7 +34,8 @@ public:
 
   ArduinoBMP388(BMP388::SpiSelectFunc select,
                 BMP388::SpiDeselectFunc deselect,
-                BMP388::SpiTransferFunc transfer);
+                BMP388::SpiTransferFunc transfer,
+                OnSensorDataFunc on_sensor_data);
 
 
   void begin();
@@ -38,6 +49,7 @@ private:
   BMP388::BMP388_Io _io;
   BMP388::BMP388_Config _config;
   BMP388::BMP388_Control _control;
+  OnSensorDataFunc _on_sensor_data;
 
 };
 
