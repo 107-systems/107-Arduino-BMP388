@@ -55,14 +55,16 @@ void ArduinoBMP388::onExternalEventHandler()
   RawSensorData raw_data;
   _control.readRawData(raw_data);
 
-  uint32_t const raw_pressure    = toRawPressure   (raw_data);
   uint32_t const raw_temperature = toRawTemperature(raw_data);
+  uint32_t const raw_pressure    = toRawPressure   (raw_data);
+
+  int64_t t_lin = 0;
+  int64_t  const temperature_compensated = compensateRawTemperature(raw_temperature, t_lin, _calib_data);
+  uint64_t const pressure_compensated    = compensateRawPressure   (raw_pressure, t_lin, _calib_data);
 
   /* TODO - convert to physical units */
   float const pressure_hpa = 0.0f;
   float const temperature_deg = 0.0f;
 
-  if(_on_sensor_data) {
-    _on_sensor_data(pressure_hpa, temperature_deg);
-  }
+  _on_sensor_data(pressure_hpa, temperature_deg);
 }
