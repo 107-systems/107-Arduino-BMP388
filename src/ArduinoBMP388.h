@@ -51,6 +51,7 @@ private:
   BMP388::BMP388_Control _control;
   OnSensorDataFunc _on_sensor_data;
 
+  BMP388::CalibrationData _calib_data;
 };
 
 #endif /* ARDUINO_BMP388_H_ */

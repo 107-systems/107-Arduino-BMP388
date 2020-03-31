@@ -64,6 +64,28 @@ enum class CMD : uint8_t
   SOFT_RESET = 0xB6
 };
 
+union CalibrationData
+{
+  struct
+  {
+    uint16_t T1;
+    uint16_t T2;
+    int8_t   T3;
+    int16_t  P1;
+    int16_t  P2;
+    int8_t   P3;
+    int8_t   P4;
+    uint16_t P5;
+    uint16_t P6;
+    int8_t   P7;
+    int8_t   P8;
+    int16_t  P9;
+    int8_t   P10;
+    int8_t   P11;
+  } coefficient;
+  uint8_t buf[21];
+};
+
 /**************************************************************************************
  * CONVERSION FUNCTIONS
  **************************************************************************************/

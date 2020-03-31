@@ -38,6 +38,11 @@ void BMP388_Control::reset()
   delay(10);
 }
 
+void BMP388_Control::readCalibData(CalibrationData & calib_data)
+{
+  _io.read(Register::CALIB_DATA, calib_data.buf, sizeof(calib_data.buf));
+}
+
 void BMP388_Control::readRawData(RawSensorData & data)
 {
   _io.read(Register::DATA, data.buf, sizeof(data.buf));

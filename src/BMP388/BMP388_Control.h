@@ -47,8 +47,9 @@ public:
 
   BMP388_Control(BMP388_Io & io);
 
-  void reset      ();
-  void readRawData(RawSensorData & data);
+  void reset        ();
+  void readCalibData(CalibrationData & calib_data);
+  void readRawData  (RawSensorData & data);
 
 
 private:

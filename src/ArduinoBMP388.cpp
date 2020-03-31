@@ -38,6 +38,7 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
 void ArduinoBMP388::begin()
 {
   _control.reset();
+  _control.readCalibData(_calib_data);
 
   _config.configPowerMode(PowerMode::Normal);
 
