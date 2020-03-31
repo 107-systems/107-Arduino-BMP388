@@ -54,6 +54,9 @@ void ArduinoBMP388::onExternalEventHandler()
   RawSensorData raw_data;
   _control.readRawData(raw_data);
 
+  uint32_t const raw_pressure    = toRawPressure   (raw_data);
+  uint32_t const raw_temperature = toRawTemperature(raw_data);
+
   /* TODO - convert to physical units */
   float const pressure_hpa = 0.0f;
   float const temperature_deg = 0.0f;

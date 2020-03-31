@@ -44,6 +44,40 @@ void BMP388_Control::readRawData(RawSensorData & data)
 }
 
 /**************************************************************************************
+ * FREE FUNCTION DEFINITION
+ **************************************************************************************/
+
+uint32_t toRawPressure(RawSensorData const & data)
+{
+  uint32_t data_xlsb = 0,
+	         data_lsb  = 0,
+	         data_msb  = 0;
+
+	data_xlsb = static_cast<uint32_t>(data.reg.pres_xlsb) << 0;
+	data_lsb  = static_cast<uint32_t>(data.reg.pres_lsb)  << 8;
+	data_msb  = static_cast<uint32_t>(data.reg.pres_msb)  << 16;
+
+  uint32_t const raw_pressure = data_msb | data_lsb | data_xlsb;
+
+  return raw_pressure;
+}
+
+uint32_t toRawTemperature(RawSensorData const & data)
+{
+  uint32_t data_xlsb = 0,
+	         data_lsb  = 0,
+	         data_msb  = 0;
+
+	data_xlsb = static_cast<uint32_t>(data.reg.temp_xlsb) << 0;
+	data_lsb  = static_cast<uint32_t>(data.reg.temp_lsb)  << 8;
+	data_msb  = static_cast<uint32_t>(data.reg.temp_msb)  << 16;
+
+  uint32_t const raw_temperature = data_msb | data_lsb | data_xlsb;
+
+  return raw_temperature;
+}
+
+/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
