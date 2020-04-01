@@ -23,24 +23,6 @@ namespace BMP388
  * TYPEDEF
  **************************************************************************************/
 
-enum class IntPinOutputType
-{
-  PushPull  = 0,
-  OpenDrain = bm(INT_CTRL::INT_OD)
-};
-
-enum class IntPinLevel
-{
-  ActiveLow  = 0,
-  ActiveHigh = bm(INT_CTRL::INT_LEVEL)
-};
-
-enum class PowerMode : uint8_t
-{
-  Sleep  = 0,
-  Normal = bm(PWR_CTRL::MODE_1) | bm(PWR_CTRL::MODE_0)
-};
-
 enum class PressureOversampling : uint8_t
 {
   x1  = 0,
@@ -81,6 +63,24 @@ enum class OutputDataRate : uint8_t
   ODR_0_006_Hz  = 0x0F,
   ODR_0_003_Hz  = 0x10,
   ODR_0_0015_Hz = 0x11
+};
+
+enum class IntPinOutputType
+{
+  PushPull  = 0,
+  OpenDrain = bm(INT_CTRL::INT_OD)
+};
+
+enum class IntPinLevel
+{
+  ActiveLow  = 0,
+  ActiveHigh = bm(INT_CTRL::INT_LEVEL)
+};
+
+enum class PowerMode : uint8_t
+{
+  Sleep  = 0,
+  Normal = bm(PWR_CTRL::MODE_1) | bm(PWR_CTRL::MODE_0)
 };
 
 /**************************************************************************************
