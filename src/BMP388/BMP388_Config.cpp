@@ -44,6 +44,11 @@ void BMP388_Config::configTemperatureOversampling(TemperatureOversampling const 
              to_integer(over_sampling));
 }
 
+void BMP388_Config::configOutputDataRate(OutputDataRate const odr)
+{
+  _io.write(Register::ODR, to_integer(odr));
+}
+
 void BMP388_Config::configIntPinOutputType(IntPinOutputType const type)
 {
   _io.modify(Register::INT_CTRL,

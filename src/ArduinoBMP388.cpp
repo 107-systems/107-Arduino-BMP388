@@ -35,7 +35,7 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
  * PUBLIC MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ArduinoBMP388::begin()
+void ArduinoBMP388::begin(OutputDataRate const odr)
 {
   _control.reset();
   _control.readCalibData(_calib_data);
@@ -44,6 +44,7 @@ void ArduinoBMP388::begin()
 
   _config.configPressureOversampling(PressureOversampling::x32);
   _config.configTemperatureOversampling(TemperatureOversampling::x2);
+  _config.configOutputDataRate(odr);
 
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
   _config.configIntPinLevel(IntPinLevel::ActiveLow);

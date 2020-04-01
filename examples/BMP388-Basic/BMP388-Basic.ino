@@ -54,8 +54,8 @@ void setup()
   pinMode(BMP388_INT_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), onExternalEvent, FALLING);
 
-
-  bmp388.begin();
+  /* Configure BMP388 */
+  bmp388.begin(BMP388::OutputDataRate::ODR_12_5_Hz);
 }
 
 void loop()

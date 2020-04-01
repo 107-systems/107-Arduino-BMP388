@@ -38,7 +38,7 @@ public:
                 OnSensorDataFunc on_sensor_data);
 
 
-  void begin();
+  void begin(BMP388::OutputDataRate const odr);
 
 
   void onExternalEventHandler();

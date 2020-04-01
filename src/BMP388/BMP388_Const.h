@@ -40,6 +40,7 @@ enum class Register : uint8_t
   IF_CONF         = 0x1A,
   PWR_CTRL        = 0x1B,
   OSR             = 0X1C,
+  ODR             = 0X1D,
   CALIB_DATA      = 0x31,
   CMD             = 0x7E,
 };
