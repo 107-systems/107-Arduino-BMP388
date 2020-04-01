@@ -64,6 +64,16 @@ enum class CMD : uint8_t
   SOFT_RESET = 0xB6
 };
 
+enum class OSR : uint8_t
+{
+  OSR_T_2 = 5,
+  OSR_T_1 = 4,
+  OSR_T_0 = 3,
+  OSR_P_2 = 2,
+  OSR_P_1 = 1,
+  OSR_P_0 = 0
+};
+
 union CalibrationData
 {
   struct

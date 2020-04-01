@@ -41,6 +41,26 @@ enum class PowerMode : uint8_t
   Normal = bm(PWR_CTRL::MODE_1) | bm(PWR_CTRL::MODE_0)
 };
 
+enum class PressureOversampling : uint8_t
+{
+  x1  = 0,
+  x2  =                                      bm(OSR::OSR_P_0),
+  x4  =                   bm(OSR::OSR_P_1),
+  x8  =                   bm(OSR::OSR_P_1) | bm(OSR::OSR_P_0),
+  x16 = bm(OSR::OSR_P_2),
+  x32 = bm(OSR::OSR_P_2)                   | bm(OSR::OSR_P_0),
+};
+
+enum class TemperatureOversampling : uint8_t
+{
+  x1  = 0,
+  x2  =                                      bm(OSR::OSR_T_0),
+  x4  =                   bm(OSR::OSR_T_1),
+  x8  =                   bm(OSR::OSR_T_1) | bm(OSR::OSR_T_0),
+  x16 = bm(OSR::OSR_T_2),
+  x32 = bm(OSR::OSR_T_2)                   | bm(OSR::OSR_T_0),
+};
+
 /**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
@@ -52,12 +72,14 @@ public:
   BMP388_Config(BMP388_Io & io);
 
 
-  void configIntPinOutputType(IntPinOutputType const type);
-  void configIntPinLevel     (IntPinLevel const level);
-  void enableDataReadyInt    ();
-  void enablePressure        ();
-  void enableTemperature     ();
-  void configPowerMode       (PowerMode const mode);
+  void configPressureOversampling   (PressureOversampling const over_sampling);
+  void configTemperatureOversampling(TemperatureOversampling const over_sampling);
+  void configIntPinOutputType       (IntPinOutputType const type);
+  void configIntPinLevel            (IntPinLevel const level);
+  void enableDataReadyInt           ();
+  void enablePressure               ();
+  void enableTemperature            ();
+  void configPowerMode              (PowerMode const mode);
 
 
 private:
