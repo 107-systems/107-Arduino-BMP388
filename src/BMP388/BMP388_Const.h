@@ -77,7 +77,7 @@ enum class OSR : uint8_t
 
 union CalibrationData
 {
-  struct
+  struct __attribute__((packed))
   {
     uint16_t T1;
     uint16_t T2;
@@ -99,7 +99,7 @@ union CalibrationData
 
 union RawSensorData
 {
-  struct
+  struct __attribute__((packed))
   {
     uint8_t pres_msb;
     uint8_t pres_lsb;
