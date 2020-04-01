@@ -42,6 +42,9 @@ void ArduinoBMP388::begin()
 
   _config.configPowerMode(PowerMode::Normal);
 
+  _config.configPressureOversampling(PressureOversampling::x32);
+  _config.configTemperatureOversampling(TemperatureOversampling::x2);
+
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
   _config.configIntPinLevel(IntPinLevel::ActiveLow);
   _config.enableDataReadyInt();
