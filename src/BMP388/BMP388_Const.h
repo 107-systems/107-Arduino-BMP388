@@ -97,6 +97,20 @@ union CalibrationData
   uint8_t buf[21];
 };
 
+union RawSensorData
+{
+  struct
+  {
+    uint8_t pres_msb;
+    uint8_t pres_lsb;
+    uint8_t pres_xlsb;
+    uint8_t temp_msb;
+    uint8_t temp_lsb;
+    uint8_t temp_xlsb;
+  } reg;
+  uint8_t buf[6];
+};
+
 /**************************************************************************************
  * CONVERSION FUNCTIONS
  **************************************************************************************/
