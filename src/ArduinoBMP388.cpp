@@ -40,8 +40,6 @@ void ArduinoBMP388::begin(OutputDataRate const odr)
   _control.reset();
   _control.readCalibData(_calib_data);
 
-  _config.configPowerMode(PowerMode::Normal);
-
   _config.configPressureOversampling(PressureOversampling::x32);
   _config.configTemperatureOversampling(TemperatureOversampling::x2);
   _config.configOutputDataRate(odr);
@@ -52,6 +50,8 @@ void ArduinoBMP388::begin(OutputDataRate const odr)
 
   _config.enablePressure();
   _config.enableTemperature();
+
+  _config.configPowerMode(PowerMode::Normal);
 }
 
 void ArduinoBMP388::onExternalEventHandler()
