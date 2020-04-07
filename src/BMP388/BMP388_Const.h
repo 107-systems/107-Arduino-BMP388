@@ -106,12 +106,12 @@ union RawSensorData
 {
   struct __attribute__((packed))
   {
-    uint8_t pres_msb;
-    uint8_t pres_lsb;
     uint8_t pres_xlsb;
-    uint8_t temp_msb;
-    uint8_t temp_lsb;
+    uint8_t pres_lsb;
+    uint8_t pres_msb;
     uint8_t temp_xlsb;
+    uint8_t temp_lsb;
+    uint8_t temp_msb;
   } reg;
   uint8_t buf[6];
 };
