@@ -17,6 +17,7 @@
 #include "BMP388/BMP388_Io.h"
 #include "BMP388/BMP388_Config.h"
 #include "BMP388/BMP388_Control.h"
+#include "BMP388/BMP388_Convert.h"
 
 /**************************************************************************************
  * TYPEDEF

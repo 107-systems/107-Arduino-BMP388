@@ -41,16 +41,6 @@ private:
 };
 
 /**************************************************************************************
- * FREE FUNCTION DECLARATION
- **************************************************************************************/
-
-uint32_t toRawTemperature        (RawSensorData const & data);
-uint32_t toRawPressure           (RawSensorData const & data);
-QuantizedCalibrationData toQuantizedCalibrationData(CalibrationData const & calib_data);
-double compensateRawTemperature(uint32_t const raw_temperature, QuantizedCalibrationData & quant_calib_data);
-double compensateRawPressure(uint32_t const raw_pressure, double const temperature_deg, QuantizedCalibrationData & quant_calib_data);
-
-/**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 

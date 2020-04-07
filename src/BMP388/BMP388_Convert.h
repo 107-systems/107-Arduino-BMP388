@@ -3,13 +3,14 @@
  * @license LGPL 3.0
  */
 
+#ifndef ARDUINO_BMP388_BMP388_CONVERT_H_
+#define ARDUINO_BMP388_BMP388_CONVERT_H_
+
 /**************************************************************************************
  * INCLUDE
  **************************************************************************************/
 
-#include "BMP388_Control.h"
-
-#include <Arduino.h>
+#include "BMP388_Const.h"
 
 /**************************************************************************************
  * NAMESPACE
@@ -19,37 +20,19 @@ namespace BMP388
 {
 
 /**************************************************************************************
- * CTOR/DTOR
+ * FUNCTION DECLARATION
  **************************************************************************************/
 
-BMP388_Control::BMP388_Control(BMP388_Io & io)
-: _io{io}
-{
-
-}
-
-/**************************************************************************************
- * PUBLIC MEMBER FUNCTIONS
- **************************************************************************************/
-
-void BMP388_Control::reset()
-{
-  _io.write(Register::CMD, to_integer(CMD::SOFT_RESET));
-  delay(10);
-}
-
-void BMP388_Control::readCalibData(CalibrationData & calib_data)
-{
-  _io.read(Register::CALIB_DATA, calib_data.buf, sizeof(calib_data.buf));
-}
-
-void BMP388_Control::readRawData(RawSensorData & data)
-{
-  _io.read(Register::DATA, data.buf, sizeof(data.buf));
-}
+uint32_t                 toRawTemperature          (RawSensorData const & data);
+uint32_t                 toRawPressure             (RawSensorData const & data);
+QuantizedCalibrationData toQuantizedCalibrationData(CalibrationData const & calib_data);
+double                   compensateRawTemperature  (uint32_t const raw_temperature, QuantizedCalibrationData & quant_calib_data);
+double                   compensateRawPressure     (uint32_t const raw_pressure, double const temperature_deg, QuantizedCalibrationData & quant_calib_data);
 
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
 
 } /* BMP388 */
+
+#endif /* ARDUINO_BMP388_BMP388_CONVERT_H_ */

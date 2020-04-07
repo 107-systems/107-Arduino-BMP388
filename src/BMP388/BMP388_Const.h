@@ -12,6 +12,8 @@
 
 #include <stdint.h>
 
+#include <type_traits>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -153,7 +155,7 @@ constexpr auto bp(Enumeration const value) -> typename std::underlying_type<Enum
 template <typename Enumeration>
 constexpr auto bm(Enumeration const value) -> typename std::underlying_type<Enumeration>::type
 {
-    return (1 << to_integer(value));
+  return (1 << to_integer(value));
 }
 
 /**************************************************************************************
