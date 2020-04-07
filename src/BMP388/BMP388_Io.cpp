@@ -38,8 +38,10 @@ uint8_t BMP388_Io::read(Register const reg)
 
   _select();
                           _transfer(reg_addr);
+                          _transfer(0); /* Dummy Byte */
   uint8_t const reg_val = _transfer(0);
   _deselect();
+  return reg_val;
 }
 
 void BMP388_Io::read(Register const reg, uint8_t * data, uint8_t const len)
@@ -48,6 +50,7 @@ void BMP388_Io::read(Register const reg, uint8_t * data, uint8_t const len)
 
   _select();
   _transfer(reg_addr);
+  _transfer(0); /* Dummy Byte */
   for(uint8_t b = 0; b < len; b++) {
     data[b] = _transfer(0);
   }
