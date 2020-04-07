@@ -1,0 +1,18 @@
+#######################################
+# Syntax Coloring Map for 107-Arduino-BMP388
+#######################################
+
+#######################################
+# Class (KEYWORD1)
+#######################################
+
+ArduinoBMP388	KEYWORD1
+OutputDataRate	KEYWORD1
+BMP388	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin	KEYWORD2
+onExternalEventHandler	KEYWORD2
