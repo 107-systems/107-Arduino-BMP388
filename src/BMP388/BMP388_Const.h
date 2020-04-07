@@ -102,6 +102,24 @@ union CalibrationData
   uint8_t buf[21];
 };
 
+typedef struct
+{
+  double T1;
+  double T2;
+  double T3;
+  double P1;
+  double P2;
+  double P3;
+  double P4;
+  double P5;
+  double P6;
+  double P7;
+  double P8;
+  double P9;
+  double P10;
+  double P11;
+} QuantizedCalibrationData;
+
 union RawSensorData
 {
   struct __attribute__((packed))

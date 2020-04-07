@@ -22,7 +22,7 @@
  * TYPEDEF
  **************************************************************************************/
 
-typedef std::function<void(float const, float const)> OnSensorDataFunc;
+typedef std::function<void(double const, double const)> OnSensorDataFunc;
 
 /**************************************************************************************
  * CLASS DECLARATION
@@ -51,7 +51,7 @@ private:
   BMP388::BMP388_Control _control;
   OnSensorDataFunc _on_sensor_data;
 
-  BMP388::CalibrationData _calib_data;
+  BMP388::QuantizedCalibrationData _quant_calib_data;
 
   void readSensorData();
 

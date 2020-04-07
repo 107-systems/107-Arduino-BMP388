@@ -25,7 +25,7 @@ void    spi_select     ();
 void    spi_deselect   ();
 uint8_t spi_transfer   (uint8_t const);
 void    onExternalEvent();
-void    onSensorData   (float const pressure_hpa, float const temperature_deg);
+void    onSensorData   (double const pressure_hpa, double const temperature_deg);
 
 /**************************************************************************************
  * GLOBAL VARIABLES
@@ -87,7 +87,7 @@ void onExternalEvent()
   bmp388.onExternalEventHandler();
 }
 
-void onSensorData(float const pressure_hpa, float const temperature_deg)
+void onSensorData(double const pressure_hpa, double const temperature_deg)
 {
   Serial.print("Barometric Pressure [hPa] = ");
   Serial.println(pressure_hpa);

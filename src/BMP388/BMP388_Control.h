@@ -46,8 +46,9 @@ private:
 
 uint32_t toRawTemperature        (RawSensorData const & data);
 uint32_t toRawPressure           (RawSensorData const & data);
-int64_t  compensateRawTemperature(uint32_t const raw_temperature, int64_t & t_lin, CalibrationData const & calib_data);
-uint64_t compensateRawPressure   (uint32_t const raw_pressure, int64_t const t_lin, CalibrationData const & calib_data);
+QuantizedCalibrationData toQuantizedCalibrationData(CalibrationData const & calib_data);
+double compensateRawTemperature(uint32_t const raw_temperature, QuantizedCalibrationData & quant_calib_data);
+double compensateRawPressure(uint32_t const raw_pressure, double const temperature_deg, QuantizedCalibrationData & quant_calib_data);
 
 /**************************************************************************************
  * NAMESPACE

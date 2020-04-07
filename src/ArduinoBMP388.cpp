@@ -38,7 +38,10 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
 void ArduinoBMP388::begin(OutputDataRate const odr)
 {
   _control.reset();
-  _control.readCalibData(_calib_data);
+
+  BMP388::CalibrationData calib_data;
+  _control.readCalibData(calib_data);
+  _quant_calib_data = toQuantizedCalibrationData(calib_data);
 
   _config.configPressureOversampling(PressureOversampling::x32);
   _config.configTemperatureOversampling(TemperatureOversampling::x2);
@@ -75,19 +78,8 @@ void ArduinoBMP388::readSensorData()
   uint32_t const raw_temperature = toRawTemperature(raw_data);
   uint32_t const raw_pressure    = toRawPressure   (raw_data);
 
-  int64_t t_lin = 0;
-  int64_t  const temperature_compensated = compensateRawTemperature(raw_temperature, t_lin, _calib_data);
-  uint64_t const pressure_compensated    = compensateRawPressure   (raw_pressure, t_lin, _calib_data);
-
-/*
-  Serial.print("Temp = ");
-  Serial.println(raw_temperature);
-  Serial.print("Pressure = ");
-  Serial.println(raw_pressure);
-*/
-  /* TODO - convert to physical units */
-  float const pressure_hpa = 0.0f;
-  float const temperature_deg = 0.0f;
+  double const temperature_deg = compensateRawTemperature(raw_temperature, _quant_calib_data);
+  double const pressure_hpa    = compensateRawPressure   (raw_pressure, temperature_deg, _quant_calib_data) / 100.0f;
 
   _on_sensor_data(pressure_hpa, temperature_deg);
 }

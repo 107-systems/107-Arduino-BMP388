@@ -11,6 +11,8 @@
 
 #include <Arduino.h>
 
+#include <math.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -82,46 +84,54 @@ uint32_t toRawPressure(RawSensorData const & data)
   return raw_pressure;
 }
 
-int64_t compensateRawTemperature(uint32_t const raw_temperature, int64_t & t_lin, CalibrationData const & calib_data)
+QuantizedCalibrationData toQuantizedCalibrationData(CalibrationData const & calib_data)
 {
-  uint64_t partial_data1 = raw_temperature - (256 * calib_data.coefficient.T1);
-  uint64_t partial_data2 = calib_data.coefficient.T2 * partial_data1;
-  uint64_t partial_data3 = partial_data1 * partial_data1;
-  int64_t  partial_data4 = static_cast<int64_t>(partial_data3) * calib_data.coefficient.T3;
-  int64_t  partial_data5 = (static_cast<int64_t>(partial_data2 * 262144) + partial_data4);
-  int64_t  partial_data6 = partial_data5 / 4294967296;
-  t_lin = partial_data6;
-  int64_t const comp_temp = static_cast<int64_t>((partial_data6 * 25)  / 16384);
-  return comp_temp;
+  QuantizedCalibrationData quant_calib_data;
+
+  quant_calib_data.T1 = (static_cast<double>(calib_data.coefficient.T1) / 0.00390625f);
+  quant_calib_data.T2 = (static_cast<double>(calib_data.coefficient.T2) / 1073741824.0f);
+  quant_calib_data.T3 = (static_cast<double>(calib_data.coefficient.T3) / 281474976710656.0f);
+  quant_calib_data.P1 = (static_cast<double>(calib_data.coefficient.P1 - 16384) / 1048576.0f);
+  quant_calib_data.P2 = (static_cast<double>(calib_data.coefficient.P2 - 16384) / 536870912.0f);
+  quant_calib_data.P3 = (static_cast<double>(calib_data.coefficient.P3) / 4294967296.0f);
+  quant_calib_data.P4 = (static_cast<double>(calib_data.coefficient.P4) / 137438953472.0f);
+  quant_calib_data.P5 = (static_cast<double>(calib_data.coefficient.P5) / 0.125f);
+  quant_calib_data.P6 = (static_cast<double>(calib_data.coefficient.P6) / 64.0f);
+  quant_calib_data.P7 = (static_cast<double>(calib_data.coefficient.P7) / 256.0f);
+  quant_calib_data.P8 = (static_cast<double>(calib_data.coefficient.P8) / 32768.0f);
+  quant_calib_data.P9 = (static_cast<double>(calib_data.coefficient.P9) / 281474976710656.0f);
+  quant_calib_data.P10 = (static_cast<double>(calib_data.coefficient.P10) / 281474976710656.0f);
+  quant_calib_data.P11 = (static_cast<double>(calib_data.coefficient.P11) / 36893488147419103232.0f);
+
+  return quant_calib_data;
 }
 
-uint64_t compensateRawPressure(uint32_t const raw_pressure, int64_t const t_lin, CalibrationData const & calib_data)
+double compensateRawTemperature(uint32_t const raw_temperature, QuantizedCalibrationData & quant_calib_data)
 {
-  int64_t partial_data1 = t_lin * t_lin;
-  int64_t partial_data2 = partial_data1 / 64;
-  int64_t partial_data3 = (partial_data2 * t_lin) / 256;
-  int64_t partial_data4 = (calib_data.coefficient.P8 * partial_data3) / 32;
-  int64_t partial_data5 = (calib_data.coefficient.P7 * partial_data1) * 16;
-  int64_t partial_data6 = (calib_data.coefficient.P6 * t_lin) * 4194304;
-  int64_t offset = (calib_data.coefficient.P5 * 140737488355328) + partial_data4 + partial_data5 + partial_data6;
+  double const partial_data1 = (double)(raw_temperature - quant_calib_data.T1);
+  double const partial_data2 = (double)(partial_data1 * quant_calib_data.T2);
 
-  partial_data2 = (calib_data.coefficient.P4 * partial_data3) / 32;
-  partial_data4 = (calib_data.coefficient.P3 * partial_data1) * 4;
-  partial_data5 = (calib_data.coefficient.P2 - 16384) * t_lin * 2097152;
-  int64_t sensitivity = ((calib_data.coefficient.P1 - 16384) * 70368744177664) + partial_data2 + partial_data4 + partial_data5;
+  return (partial_data2 + (partial_data1 * partial_data1) * quant_calib_data.T3);
+}
 
-  partial_data1 = (sensitivity / 16777216) * raw_pressure;
-  partial_data2 = calib_data.coefficient.P10 * t_lin;
-  partial_data3 = partial_data2 + (65536 * calib_data.coefficient.P9);
-  partial_data4 = (partial_data3 * raw_pressure) / 8192;
-  partial_data5 = (partial_data4 * raw_pressure) / 512;
-  partial_data6 = static_cast<int64_t>(static_cast<uint64_t>(raw_pressure) * static_cast<uint64_t>(raw_pressure));
-  partial_data2 = (calib_data.coefficient.P11 * partial_data6) / 65536;
-  partial_data3 = (partial_data2 * raw_pressure) / 128;
-  partial_data4 = (offset / 4) + partial_data1 + partial_data5 + partial_data3;
-  uint64_t comp_press = (((uint64_t)partial_data4 * 25) / (uint64_t)1099511627776);
+double compensateRawPressure(uint32_t const raw_pressure, double const temperature_deg, QuantizedCalibrationData & quant_calib_data)
+{
+  double       partial_data1 = quant_calib_data.P6 * temperature_deg;
+  double       partial_data2 = quant_calib_data.P7 * pow(temperature_deg, 2);
+  double       partial_data3 = quant_calib_data.P8 * pow(temperature_deg, 3);
+  double const partial_out1 = quant_calib_data.P5 + partial_data1 + partial_data2 + partial_data3;
 
-  return comp_press;
+               partial_data1 = quant_calib_data.P2 * temperature_deg;
+               partial_data2 = quant_calib_data.P3 * pow(temperature_deg, 2);
+               partial_data3 = quant_calib_data.P4 * pow(temperature_deg, 3);
+  double const partial_out2  = static_cast<double>(raw_pressure) * (quant_calib_data.P1 + partial_data1 + partial_data2 + partial_data3);
+
+               partial_data1 = pow(static_cast<double>(raw_pressure), 2);
+               partial_data2 = quant_calib_data.P9 + quant_calib_data.P10 * temperature_deg;
+               partial_data3 = partial_data1 * partial_data2;
+  double const partial_out3  = partial_data3 + pow(static_cast<double>(raw_pressure), 3) * quant_calib_data.P11;
+
+  return (partial_out1 + partial_out2 + partial_out3);
 }
 
 /**************************************************************************************
