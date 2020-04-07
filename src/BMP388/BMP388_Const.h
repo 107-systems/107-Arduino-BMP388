@@ -52,6 +52,11 @@ enum class INT_CTRL : uint8_t
   INT_OD    = 0
 };
 
+enum class INT_STATUS : uint8_t
+{
+  DRDY = 3
+};
+
 enum class PWR_CTRL : uint8_t
 {
   MODE_1   = 5,
