@@ -56,6 +56,19 @@ void ArduinoBMP388::begin(OutputDataRate const odr)
 
 void ArduinoBMP388::onExternalEventHandler()
 {
+  uint8_t const int_status = _io.read(Register::INT_STATUS_REG);
+
+  if(int_status & bm(INT_STATUS::DRDY)) {
+    readSensorData();
+  }
+}
+
+/**************************************************************************************
+ * PRIVATE MEMBER FUNCTIONS
+ **************************************************************************************/
+
+void ArduinoBMP388::readSensorData()
+{
   RawSensorData raw_data;
   _control.readRawData(raw_data);
 
@@ -66,6 +79,12 @@ void ArduinoBMP388::onExternalEventHandler()
   int64_t  const temperature_compensated = compensateRawTemperature(raw_temperature, t_lin, _calib_data);
   uint64_t const pressure_compensated    = compensateRawPressure   (raw_pressure, t_lin, _calib_data);
 
+/*
+  Serial.print("Temp = ");
+  Serial.println(raw_temperature);
+  Serial.print("Pressure = ");
+  Serial.println(raw_pressure);
+*/
   /* TODO - convert to physical units */
   float const pressure_hpa = 0.0f;
   float const temperature_deg = 0.0f;
