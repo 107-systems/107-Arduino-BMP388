@@ -89,8 +89,8 @@ void onExternalEvent()
 
 void onSensorData(double const pressure_hpa, double const temperature_deg)
 {
-  Serial.print("Barometric Pressure [hPa] = ");
-  Serial.println(pressure_hpa);
-  Serial.print("Temperature [°C]          = ");
-  Serial.println(temperature_deg);
+  Serial.print(pressure_hpa);
+  Serial.print(" hPa / ");
+  Serial.print(temperature_deg);
+  Serial.println(" °C");
 }
