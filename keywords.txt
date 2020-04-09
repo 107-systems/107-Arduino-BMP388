@@ -16,3 +16,4 @@ BMP388	KEYWORD1
 
 begin	KEYWORD2
 onExternalEventHandler	KEYWORD2
+convertPressureToAltitude	KEYWORD2
