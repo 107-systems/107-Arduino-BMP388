@@ -17,10 +17,12 @@ void    spi_deselect   ()                   { digitalWrite(BMP388_CS_PIN, HIGH);
 uint8_t spi_transfer   (uint8_t const data) { return SPI.transfer(data); }
 void    onExternalEvent()                   { bmp388.onExternalEventHandler(); }
 void    onSensorData   (double const pressure_hpa, double const temperature_deg) {
-  Serial.print("Barometric Pressure [hPa] = ");
-  Serial.println(pressure_hpa);
-  Serial.print("Temperature [°C]          = ");
-  Serial.println(temperature_deg);
+  Serial.print(pressure_hpa);
+  Serial.print(" hPa / ");
+  Serial.print(temperature_deg);
+  Serial.print(" °C / ");
+  Serial.print(ArduinoBMP388::convertPressureToAltitude(pressure_hpa));
+  Serial.println(" m");
 }
 /* ... */
 ArduinoBMP388 bmp388(spi_select, spi_deselect, spi_transfer, onSensorData);
