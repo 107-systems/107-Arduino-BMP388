@@ -9,6 +9,8 @@
 
 #include "ArduinoBMP388.h"
 
+#include <math.h>
+
 /**************************************************************************************
  * NAMESPACE
  **************************************************************************************/
@@ -64,6 +66,23 @@ void ArduinoBMP388::onExternalEventHandler()
   if(int_status & bm(INT_STATUS::DRDY)) {
     readSensorData();
   }
+}
+
+double ArduinoBMP388::convertPressureToAltitude(double const pressure_hpa)
+{
+  /* This formula assumes the international standard atmosphere (standard
+   * temperature 15 °C = 288.15 K, static pressure = 1013.25 hPa, standard
+   * temperature lapse rate 0.65 K / 100 m) and can be considered valid up
+   * until 11 km.
+   */
+  static double constexpr Tb  = 218.15;  /* [Tb] = K   */
+  static double constexpr Lb  = 0.0065;  /* [lB] = K/m */
+  static double constexpr Pb  = 1013.25; /* [pB] = hPa */
+  static double constexpr exp = 1.0 / 5.255;
+  static double constexpr fac = Tb / Lb;
+
+  double const altitude_m = fac * (1 - pow((pressure_hpa / Pb), exp));
+  return altitude_m;
 }
 
 /**************************************************************************************

@@ -44,6 +44,8 @@ public:
 
   void onExternalEventHandler();
 
+  static double convertPressureToAltitude(double const pressure_hpa);
+
 
 private:
 
