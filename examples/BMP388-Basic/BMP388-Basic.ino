@@ -92,5 +92,7 @@ void onSensorData(double const pressure_hpa, double const temperature_deg)
   Serial.print(pressure_hpa);
   Serial.print(" hPa / ");
   Serial.print(temperature_deg);
-  Serial.println(" °C");
+  Serial.print(" °C / ");
+  Serial.print(ArduinoBMP388::convertPressureToAltitude(pressure_hpa));
+  Serial.println(" m");
 }
