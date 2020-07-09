@@ -2,6 +2,10 @@
 ====================
 [![Build Status](https://travis-ci.org/107-systems/107-Arduino-BMP388.svg?branch=master)](https://travis-ci.org/107-systems/107-Arduino-BMP388)
 
+<p align="center">
+  <a href="https://github.com/107-systems/107-Arduino-Viper"><img src="extras/logo/viper-logo.jpg" width="40%"></a>
+</p>
+
 Arduino library for interfacing with the BMP388 barometric pressure sensor which can be used for inferring altitude information.
 
 ## Example
