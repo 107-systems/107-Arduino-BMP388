@@ -85,6 +85,11 @@ double ArduinoBMP388::convertPressureToAltitude(double const pressure_hpa)
   return altitude_m;
 }
 
+uint8_t ArduinoBMP388::getChipId(void)
+{
+  return _io.read(Register::CHIP_ID);
+}
+
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
