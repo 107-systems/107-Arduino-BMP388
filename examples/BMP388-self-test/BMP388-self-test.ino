@@ -1,6 +1,6 @@
 /**
  * @brief BMP388 self-test using 107-Arduino-BMP388 library.
- * 
+ *
  * according to application note https://www.bosch-sensortec.com/media/boschsensortec/downloads/application_notes_1/bst-mps-an006.pdf
  */
 
