@@ -51,22 +51,22 @@ void setup()
   while(!Serial) { }
 
   /* Setup SPI access */
-  Serial.println("Setup SPI access on Arduino");  
+  Serial.println("Setup SPI access on Arduino");
   SPI.begin();
   pinMode(BMP388_CS_PIN, OUTPUT);
   digitalWrite(BMP388_CS_PIN, HIGH);
-  Serial.println("Passed!");  
+  Serial.println("Passed!");
 
   /* Attach interrupt handler */
-  Serial.println("Setup interrupt hanlder on Arduino");  
+  Serial.println("Setup interrupt handler on Arduino");
   pinMode(BMP388_INT_PIN, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), onExternalEvent, FALLING);
-  Serial.println("Passed!");  
+  Serial.println("Passed!");
 
   /* Configure BMP388 */
-  Serial.println("Initialize BMP388");  
+  Serial.println("Initialize BMP388");
   bmp388.begin(BMP388::OutputDataRate::ODR_12_5_Hz);
-  Serial.println("Passed!");  
+  Serial.println("Passed!");
 }
 
 void loop()
@@ -78,8 +78,8 @@ void loop()
   chip_id=bmp388.getChipId();
   Serial.print("Chip-ID: 0x");
   Serial.println(chip_id, HEX);
-  if(chip_id==0x50) Serial.println("Passed!");  
-  else Serial.println("Failed!");  
+  if(chip_id==0x50) Serial.println("Passed!");
+  else Serial.println("Failed!");
 
   Serial.println("Verify trimming data");
   /* not possible now */
@@ -87,17 +87,17 @@ void loop()
   Serial.println("measure temperature and pressure");
   measurement_done=0;
   while(measurement_done==0);
-  Serial.println("Passed!");  
+  Serial.println("Passed!");
 
-  Serial.println("check measurement plausability");
+  Serial.println("check measurement plausibility");
   Serial.print("temperature:");
   Serial.println(measurement_temperature_deg);
-  if((measurement_temperature_deg>0)&&(measurement_temperature_deg<40)) Serial.println("Passed!");  
-  else Serial.println("Failed!");  
+  if((measurement_temperature_deg>0)&&(measurement_temperature_deg<40)) Serial.println("Passed!");
+  else Serial.println("Failed!");
   Serial.print("pressure:");
   Serial.println(measurement_pressure_hpa);
-  if((measurement_pressure_hpa>900)&&(measurement_pressure_hpa<1100)) Serial.println("Passed!");  
-  else Serial.println("Failed!");  
+  if((measurement_pressure_hpa>900)&&(measurement_pressure_hpa<1100)) Serial.println("Passed!");
+  else Serial.println("Failed!");
 
   Serial.println("self-test finished");
   Serial.println();
