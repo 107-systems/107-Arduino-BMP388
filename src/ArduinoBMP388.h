@@ -1,6 +1,8 @@
 /**
- * @brief Arduino library for interfacing with the BMP388 barometric pressure sensor.
- * @license LGPL 3.0
+ * This software is distributed under the terms of the MIT License.
+ * Copyright (c) 2020 LXRobotics.
+ * Author: Alexander Entinger <alexander.entinger@lxrobotics.com>
+ * Contributors: https://github.com/107-systems/107-Arduino-BMP388/graphs/contributors.
  */
 
 #ifndef ARDUINO_BMP388_H_
