@@ -71,11 +71,10 @@ void setup()
 
 void loop()
 {
-  uint8_t chip_id;
   /* Get BMP388 Chip ID*/
   Serial.println("Verify Chip-ID");
 
-  chip_id=bmp388.getChipId();
+  uint8_t chip_id=bmp388.getChipId();
   Serial.print("Chip-ID: 0x");
   Serial.println(chip_id, HEX);
   if(chip_id==0x50) Serial.println("Passed!");
