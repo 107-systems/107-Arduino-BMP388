@@ -41,7 +41,6 @@ ArduinoBMP388 bmp388(spi_select,
 
 void setup()
 {
-  uint8_t chip_id;
   Serial.begin(9600);
   while(!Serial) { }
 
@@ -53,7 +52,7 @@ void setup()
   /* Get BMP388 Chip ID*/
   Serial.println("The Chip-ID should be 0x50!");
 
-  chip_id=bmp388.getChipId();
+  uint8_t chip_id=bmp388.getChipId();
   Serial.print("Chip-ID: 0x");
   Serial.println(chip_id, HEX);
 }
