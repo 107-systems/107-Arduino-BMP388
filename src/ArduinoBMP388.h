@@ -48,6 +48,8 @@ public:
 
   static double convertPressureToAltitude(double const pressure_hpa);
 
+  uint8_t getChipId(void);
+
 
 private:
 
