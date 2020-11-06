@@ -37,9 +37,10 @@ ArduinoBMP388 bmp388(spi_select,
                      spi_deselect,
                      spi_transfer,
                      onSensorData);
-volatile bool measurement_done=false;
-volatile double measurement_pressure_hpa=0.0;
-volatile double measurement_temperature_deg=0.0;
+
+volatile bool measurement_done = false;
+volatile double measurement_pressure_hpa = 0.0;
+volatile double measurement_temperature_deg = 0.0;
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -84,7 +85,7 @@ void loop()
   /* not possible now */
 
   Serial.println("measure temperature and pressure");
-  measurement_done=false;
+  measurement_done = false;
   while(!measurement_done) { };
   Serial.println("Passed!");
 
@@ -130,7 +131,7 @@ void onExternalEvent()
 
 void onSensorData(double const pressure_hpa, double const temperature_deg)
 {
-  measurement_pressure_hpa=pressure_hpa;
-  measurement_temperature_deg=temperature_deg;
-  measurement_done=1;
+  measurement_pressure_hpa = pressure_hpa;
+  measurement_temperature_deg = temperature_deg;
+  measurement_done = true;
 }
