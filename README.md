@@ -1,7 +1,8 @@
 `107-Arduino-BMP388`
 ====================
 [![Compile Examples](https://github.com/107-systems/107-Arduino-BMP388/workflows/Compile%20Examples/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=Compile+Examples)
-[![Extra Library Checks](https://github.com/107-systems/107-Arduino-BMP388/workflows/Extra%20Library%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=Extra+Library+Checks)
+[![Check Arduino](https://github.com/107-systems/107-Arduino-BMP388/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions/workflows/check-arduino.yml)
+[![Check keywords.txt](https://github.com/107-systems/107-Arduino-BMP388/actions/workflows/check-keywords-txt.yml/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions/workflows/check-keywords-txt.yml)
 [![General Formatting Checks](https://github.com/107-systems/107-Arduino-BMP388/workflows/General%20Formatting%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=General+Formatting+Checks)
 [![Spell Check](https://github.com/107-systems/107-Arduino-BMP388/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=Spell+Check)
 
