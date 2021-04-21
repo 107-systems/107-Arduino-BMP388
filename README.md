@@ -1,5 +1,6 @@
 `107-Arduino-BMP388`
 ====================
+[![Arduino Library Badge](https://www.ardu-badge.com/badge/107-Arduino-BMP388.svg?)](https://www.ardu-badge.com/107-Arduino-BMP388)
 [![Compile Examples](https://github.com/107-systems/107-Arduino-BMP388/workflows/Compile%20Examples/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=Compile+Examples)
 [![Extra Library Checks](https://github.com/107-systems/107-Arduino-BMP388/workflows/Extra%20Library%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=Extra+Library+Checks)
 [![General Formatting Checks](https://github.com/107-systems/107-Arduino-BMP388/workflows/General%20Formatting%20Checks/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=General+Formatting+Checks)
