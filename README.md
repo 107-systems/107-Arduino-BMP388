@@ -27,11 +27,8 @@ This library works for
 static int const BMP388_CS_PIN  = 2;
 static int const BMP388_INT_PIN = 6;
 /* ... */
-void    spi_select     ()                   { digitalWrite(BMP388_CS_PIN, LOW); }
-void    spi_deselect   ()                   { digitalWrite(BMP388_CS_PIN, HIGH); }
-uint8_t spi_transfer   (uint8_t const data) { return SPI.transfer(data); }
-void    onExternalEvent()                   { bmp388.onExternalEventHandler(); }
-void    onSensorData   (double const pressure_hpa, double const temperature_deg) {
+void onSensorData(double const pressure_hpa, double const temperature_deg)
+{
   Serial.print(pressure_hpa);
   Serial.print(" hPa / ");
   Serial.print(temperature_deg);
@@ -40,9 +37,13 @@ void    onSensorData   (double const pressure_hpa, double const temperature_deg)
   Serial.println(" m");
 }
 /* ... */
-ArduinoBMP388 bmp388(spi_select, spi_deselect, spi_transfer, onSensorData);
+ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
+                     [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
+                     [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
+                     onSensorData);
 /* ... */
-void setup() {
+void setup()
+{
   Serial.begin(9600);
   while(!Serial) { }
 
@@ -51,12 +52,13 @@ void setup() {
   digitalWrite(BMP388_CS_PIN, HIGH);
 
   pinMode(BMP388_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), onExternalEvent, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), [](){ bmp388.onExternalEventHandler(); }, FALLING);
 
   bmp388.begin(BMP388::OutputDataRate::ODR_12_5_Hz);
 }
 
-void loop() {
+void loop()
+{
 
 }
 ```
