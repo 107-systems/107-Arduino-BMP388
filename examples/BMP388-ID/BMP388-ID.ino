@@ -18,19 +18,13 @@ static int const BMP388_CS_PIN  = 2;
 static int const BMP388_INT_PIN = 6;
 
 /**************************************************************************************
- * FUNCTION DECLARATION
- **************************************************************************************/
-
-void onSensorData(double const pressure_hpa, double const temperature_deg);
-
-/**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
 ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
                      [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
                      [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
-                     onSensorData);
+                     nullptr);
 
 /**************************************************************************************
  * SETUP/LOOP
@@ -55,15 +49,6 @@ void setup()
 }
 
 void loop()
-{
-
-}
-
-/**************************************************************************************
- * FUNCTION DEFINITION
- **************************************************************************************/
-
-void onSensorData(double const pressure_hpa, double const temperature_deg)
 {
 
 }
