@@ -65,8 +65,15 @@ void ArduinoBMP388::onExternalEventHandler()
 {
   uint8_t const int_status = _io.read(Register::INT_STATUS_REG);
 
-  if(int_status & bm(INT_STATUS::DRDY)) {
-    readSensorData();
+  if(int_status & bm(INT_STATUS::DRDY))
+  {
+    double pressure_hpa = 0.0,
+           temperature_deg = 0.0;
+
+    readSensorData(pressure_hpa, temperature_deg);
+
+    if (_on_sensor_data)
+      _on_sensor_data(pressure_hpa, temperature_deg);
   }
 }
 
@@ -96,16 +103,14 @@ uint8_t ArduinoBMP388::getChipId(void)
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/
 
-void ArduinoBMP388::readSensorData()
+void ArduinoBMP388::readSensorData(double & pressure_hpa, double & temperature_deg)
 {
   RawSensorData raw_data;
   _control.readRawData(raw_data);
 
-  uint32_t const raw_temperature = toRawTemperature(raw_data);
   uint32_t const raw_pressure    = toRawPressure   (raw_data);
+  uint32_t const raw_temperature = toRawTemperature(raw_data);
 
-  double const temperature_deg = compensateRawTemperature(raw_temperature, _quant_calib_data);
-  double const pressure_hpa    = compensateRawPressure   (raw_pressure, temperature_deg, _quant_calib_data) / 100.0f;
-
-  _on_sensor_data(pressure_hpa, temperature_deg);
+  pressure_hpa    = compensateRawPressure   (raw_pressure, temperature_deg, _quant_calib_data) / 100.0f;
+  temperature_deg = compensateRawTemperature(raw_temperature, _quant_calib_data);
 }

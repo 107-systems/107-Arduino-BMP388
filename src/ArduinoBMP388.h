@@ -60,7 +60,7 @@ private:
 
   BMP388::QuantizedCalibrationData _quant_calib_data;
 
-  void readSensorData();
+  void readSensorData(double & pressure_hpa, double & temperature_deg);
 
 };
 
