@@ -21,19 +21,15 @@ static int const BMP388_INT_PIN = 6;
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void    spi_select     ();
-void    spi_deselect   ();
-uint8_t spi_transfer   (uint8_t const);
-void    onExternalEvent();
-void    onSensorData   (double const pressure_hpa, double const temperature_deg);
+void onSensorData(double const pressure_hpa, double const temperature_deg);
 
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoBMP388 bmp388(spi_select,
-                     spi_deselect,
-                     spi_transfer,
+ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
+                     [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
+                     [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
                      onSensorData);
 
 /**************************************************************************************
@@ -52,7 +48,7 @@ void setup()
 
   /* Attach interrupt handler */
   pinMode(BMP388_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), onExternalEvent, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), [](){ bmp388.onExternalEventHandler(); }, FALLING);
 
   /* Configure BMP388 */
   bmp388.begin(BMP388::OutputDataRate::ODR_12_5_Hz);
@@ -66,26 +62,6 @@ void loop()
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
-
-void spi_select()
-{
-  digitalWrite(BMP388_CS_PIN, LOW);
-}
-
-void spi_deselect()
-{
-  digitalWrite(BMP388_CS_PIN, HIGH);
-}
-
-uint8_t spi_transfer(uint8_t const data)
-{
-  return SPI.transfer(data);
-}
-
-void onExternalEvent()
-{
-  bmp388.onExternalEventHandler();
-}
 
 void onSensorData(double const pressure_hpa, double const temperature_deg)
 {

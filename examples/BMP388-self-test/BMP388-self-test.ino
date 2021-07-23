@@ -23,22 +23,19 @@ static int const BMP388_INT_PIN = 6;
  * FUNCTION DECLARATION
  **************************************************************************************/
 
-void    spi_select     ();
-void    spi_deselect   ();
-uint8_t spi_transfer   (uint8_t const);
-void    onExternalEvent();
-void    onSensorData   (double const pressure_hpa, double const temperature_deg);
+void onSensorData(double const pressure_hpa, double const temperature_deg);
+void runSelfTest ();
 
 /**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
-ArduinoBMP388 bmp388(spi_select,
-                     spi_deselect,
-                     spi_transfer,
+ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
+                     [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
+                     [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
                      onSensorData);
 
-volatile bool measurement_done = false;
+volatile bool   measurement_done = false;
 volatile double measurement_pressure_hpa = 0.0;
 volatile double measurement_temperature_deg = 0.0;
 
@@ -61,7 +58,7 @@ void setup()
   /* Attach interrupt handler */
   Serial.println("Setup interrupt handler on Arduino");
   pinMode(BMP388_INT_PIN, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), onExternalEvent, FALLING);
+  attachInterrupt(digitalPinToInterrupt(BMP388_INT_PIN), [](){ bmp388.onExternalEventHandler(); }, FALLING);
   Serial.println("Passed!");
 
   /* Configure BMP388 */
@@ -72,66 +69,62 @@ void setup()
 
 void loop()
 {
-  /* Get BMP388 Chip ID*/
-  Serial.println("Verify Chip-ID");
-
-  uint8_t chip_id=bmp388.getChipId();
-  Serial.print("Chip-ID: 0x");
-  Serial.println(chip_id, HEX);
-  if(chip_id==0x50) Serial.println("Passed!");
-  else Serial.println("Failed!");
-
-  Serial.println("Verify trimming data");
-  /* not possible now */
-
-  Serial.println("measure temperature and pressure");
-  measurement_done = false;
-  while(!measurement_done) { };
-  Serial.println("Passed!");
-
-  Serial.println("check measurement plausibility");
-  Serial.print("temperature:");
-  Serial.println(measurement_temperature_deg);
-  if((measurement_temperature_deg>0.0)&&(measurement_temperature_deg<40.0)) Serial.println("Passed!");
-  else Serial.println("Failed!");
-  Serial.print("pressure:");
-  Serial.println(measurement_pressure_hpa);
-  if((measurement_pressure_hpa>900.0)&&(measurement_pressure_hpa<1100.0)) Serial.println("Passed!");
-  else Serial.println("Failed!");
-
-  Serial.println("self-test finished");
-  Serial.println();
-  Serial.println();
-  delay(3000);
+  static bool self_test_run = false;
+  if (!self_test_run)
+  {
+    runSelfTest();
+    self_test_run = true;
+  }
 }
 
 /**************************************************************************************
  * FUNCTION DEFINITION
  **************************************************************************************/
 
-void spi_select()
-{
-  digitalWrite(BMP388_CS_PIN, LOW);
-}
-
-void spi_deselect()
-{
-  digitalWrite(BMP388_CS_PIN, HIGH);
-}
-
-uint8_t spi_transfer(uint8_t const data)
-{
-  return SPI.transfer(data);
-}
-
-void onExternalEvent()
-{
-  bmp388.onExternalEventHandler();
-}
-
 void onSensorData(double const pressure_hpa, double const temperature_deg)
 {
   measurement_pressure_hpa = pressure_hpa;
   measurement_temperature_deg = temperature_deg;
   measurement_done = true;
+}
+
+void runSelfTest()
+{
+  /* Get BMP388 Chip ID*/
+  Serial.println("Verify Chip-ID");
+
+  uint8_t chip_id=bmp388.getChipId();
+  Serial.print("Chip-ID: 0x");
+  Serial.println(chip_id, HEX);
+  if(chip_id == 0x50)
+    Serial.println("Passed!");
+  else
+    Serial.println("Failed!");
+
+  Serial.println("Verify trimming data");
+  /* not possible now */
+
+  Serial.println("Measure temperature and pressure");
+  measurement_done = false;
+  while(!measurement_done) { };
+  Serial.println("Passed!");
+
+  Serial.println("Check measurement plausibility");
+  Serial.print("Temperature:");
+  Serial.println(measurement_temperature_deg);
+  if ((measurement_temperature_deg > 0.0) &&
+      (measurement_temperature_deg < 40.0))
+    Serial.println("Passed!");
+  else
+    Serial.println("Failed!");
+
+  Serial.print("Pressure:");
+  Serial.println(measurement_pressure_hpa);
+  if ((measurement_pressure_hpa > 900.0) &&
+      (measurement_pressure_hpa < 1100.0))
+    Serial.println("Passed!");
+  else
+    Serial.println("Failed!");
+
+  Serial.println("Self-test finished");
 }
