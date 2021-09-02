@@ -99,14 +99,15 @@ drone::unit::Length ArduinoBMP388::convertPressureToAltitude(drone::unit::Pressu
    * temperature lapse rate 0.65 K / 100 m) and can be considered valid up
    * until 11 km.
    */
-  static double constexpr Tb  = 218.15;  /* [Tb] = K   */
-  static double constexpr Lb  = 0.0065;  /* [lB] = K/m */
-  static double constexpr Pb  = 1013.25; /* [pB] = hPa */
-  static double constexpr exp = 1.0 / 5.255;
-  static double constexpr fac = Tb / Lb;
+  static auto constexpr Tb  = 218.15 * drone::unit::kelvin;
+  static auto constexpr Lb  = 0.0065 * drone::unit::kelvin / drone::unit::meter;
+  static auto constexpr Pb  = 1013.25 * 100.0 * drone::unit::pascal;
+  static auto constexpr exp = 1.0 / 5.255;
+  static auto constexpr fac = Tb / Lb;
 
-  double const altitude_m = fac * (1 - pow(((pressure.value() * 100.0) / Pb), exp));
-  return (altitude_m * drone::unit::meter);
+  drone::unit::Length const altitude_m = fac * (1 - pow((pressure / Pb), exp));
+
+  return altitude_m;
 }
 
 uint8_t ArduinoBMP388::getChipId(void)
