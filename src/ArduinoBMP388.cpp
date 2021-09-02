@@ -26,11 +26,23 @@ using namespace BMP388;
 ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
                              SpiDeselectFunc deselect,
                              SpiTransferFunc transfer,
-                             OnSensorDataFunc on_sensor_data)
-: _io{select, deselect, transfer}
+                             OnPressureDataUpdateFunc on_pressure_data_update,
+                             OnTemperatureDataUpdateFunc on_temperature_data_update)
+: drone::PressureSensorBase("BMP388",
+                            300.0  * drone::unit::pascal,
+                            1250.0 * drone::unit::pascal,
+                            1.0    * drone::unit::pascal,
+                            0.0    * drone::unit::hertz,
+                            on_pressure_data_update)
+, drone::TemperatureSensorBase("BMP388",
+                               233.15 * drone::unit::kelvin, /* -40 °C */
+                               358.15 * drone::unit::kelvin, /* +85 °C */
+                               0.1    * drone::unit::kelvin,
+                               0.0    * drone::unit::hertz,
+                               on_temperature_data_update)
+, _io{select, deselect, transfer}
 , _config{_io}
 , _control{_io}
-, _on_sensor_data{on_sensor_data}
 {
 
 }
@@ -72,12 +84,15 @@ void ArduinoBMP388::onExternalEventHandler()
 
     readSensorData(pressure_hpa, temperature_deg);
 
-    if (_on_sensor_data)
-      _on_sensor_data(pressure_hpa, temperature_deg);
+    _pressure = pressure_hpa * 100.0 * drone::unit::pascal;
+    _temperature = (temperature_deg + 273.15) * drone::unit::kelvin;
+
+    drone::PressureSensorBase::onSensorValueUpdate(_pressure);
+    drone::TemperatureSensorBase::onSensorValueUpdate(_temperature);
   }
 }
 
-double ArduinoBMP388::convertPressureToAltitude(double const pressure_hpa)
+drone::unit::Length ArduinoBMP388::convertPressureToAltitude(drone::unit::Pressure const pressure)
 {
   /* This formula assumes the international standard atmosphere (standard
    * temperature 15 °C = 288.15 K, static pressure = 1013.25 hPa, standard
@@ -90,8 +105,8 @@ double ArduinoBMP388::convertPressureToAltitude(double const pressure_hpa)
   static double constexpr exp = 1.0 / 5.255;
   static double constexpr fac = Tb / Lb;
 
-  double const altitude_m = fac * (1 - pow((pressure_hpa / Pb), exp));
-  return altitude_m;
+  double const altitude_m = fac * (1 - pow(((pressure.value() * 100.0) / Pb), exp));
+  return (altitude_m * drone::unit::meter);
 }
 
 uint8_t ArduinoBMP388::getChipId(void)

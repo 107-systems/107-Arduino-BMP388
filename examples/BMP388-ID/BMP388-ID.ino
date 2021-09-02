@@ -24,6 +24,7 @@ static int const BMP388_INT_PIN = 6;
 ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
                      [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
                      [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
+                     nullptr,
                      nullptr);
 
 /**************************************************************************************

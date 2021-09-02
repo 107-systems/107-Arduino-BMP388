@@ -12,6 +12,8 @@
  * INCLUDE
  **************************************************************************************/
 
+#include <107-Arduino-Sensor.hpp>
+
 #undef max
 #undef min
 #include <functional>
@@ -22,23 +24,23 @@
 #include "BMP388/BMP388_Convert.h"
 
 /**************************************************************************************
- * TYPEDEF
- **************************************************************************************/
-
-typedef std::function<void(double const, double const)> OnSensorDataFunc;
-
-/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class ArduinoBMP388
+class ArduinoBMP388 : public drone::PressureSensorBase,
+                      public drone::TemperatureSensorBase
 {
 public:
+
+  typedef std::function<void(drone::unit::Pressure const)> OnPressureDataUpdateFunc;
+  typedef std::function<void(drone::unit::Temperature const)> OnTemperatureDataUpdateFunc;
+
 
   ArduinoBMP388(BMP388::SpiSelectFunc select,
                 BMP388::SpiDeselectFunc deselect,
                 BMP388::SpiTransferFunc transfer,
-                OnSensorDataFunc on_sensor_data);
+                OnPressureDataUpdateFunc on_pressure_data_update,
+                OnTemperatureDataUpdateFunc on_temperature_data_update);
 
 
   void begin(BMP388::OutputDataRate const odr);
@@ -46,9 +48,12 @@ public:
 
   void onExternalEventHandler();
 
-  static double convertPressureToAltitude(double const pressure_hpa);
+  static drone::unit::Length convertPressureToAltitude(drone::unit::Pressure const pressure);
 
   uint8_t getChipId(void);
+
+  virtual void get(drone::unit::Pressure & p) const override { p = _pressure; }
+  virtual void get(drone::unit::Temperature & t) const override { t = _temperature; }
 
 
 private:
@@ -56,7 +61,8 @@ private:
   BMP388::BMP388_Io _io;
   BMP388::BMP388_Config _config;
   BMP388::BMP388_Control _control;
-  OnSensorDataFunc _on_sensor_data;
+  drone::unit::Pressure _pressure;
+  drone::unit::Temperature _temperature;
 
   BMP388::QuantizedCalibrationData _quant_calib_data;
 
