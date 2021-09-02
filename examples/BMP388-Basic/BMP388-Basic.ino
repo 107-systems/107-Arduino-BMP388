@@ -46,6 +46,9 @@ void setup()
   Serial.begin(9600);
   while(!Serial) { }
 
+  /* Print data of BMP388 sensor. */
+  Serial.print(bmp388);
+
   /* Setup SPI access */
   SPI.begin();
   pinMode(BMP388_CS_PIN, OUTPUT);

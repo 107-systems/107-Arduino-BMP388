@@ -114,6 +114,14 @@ uint8_t ArduinoBMP388::getChipId(void)
   return _io.read(Register::CHIP_ID);
 }
 
+size_t ArduinoBMP388::printTo(Print & p) const
+{
+  size_t n = 0;
+  n += drone::PressureSensorBase::printTo(p);
+  n += drone::TemperatureSensorBase::printTo(p);
+  return n;
+}
+
 /**************************************************************************************
  * PRIVATE MEMBER FUNCTIONS
  **************************************************************************************/

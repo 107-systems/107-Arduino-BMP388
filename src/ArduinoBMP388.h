@@ -27,8 +27,8 @@
  * CLASS DECLARATION
  **************************************************************************************/
 
-class ArduinoBMP388 : public drone::PressureSensorBase,
-                      public drone::TemperatureSensorBase
+class ArduinoBMP388 : virtual public drone::PressureSensorBase,
+                      virtual public drone::TemperatureSensorBase
 {
 public:
 
@@ -55,6 +55,7 @@ public:
   virtual void get(drone::unit::Pressure & p) const override { p = _pressure; }
   virtual void get(drone::unit::Temperature & t) const override { t = _temperature; }
 
+  virtual size_t printTo(Print & p) const override;
 
 private:
 
