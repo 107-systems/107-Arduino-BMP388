@@ -28,13 +28,13 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
                              SpiTransferFunc transfer,
                              OnPressureDataUpdateFunc on_pressure_data_update,
                              OnTemperatureDataUpdateFunc on_temperature_data_update)
-: drone::PressureSensorBase("BMP388",
+: drone::PressureSensorBase("BMP388/pressure",
                             300.0  * drone::unit::pascal,
                             1250.0 * drone::unit::pascal,
                             1.0    * drone::unit::pascal,
                             0.0    * drone::unit::hertz,
                             on_pressure_data_update)
-, drone::TemperatureSensorBase("BMP388",
+, drone::TemperatureSensorBase("BMP388/temperature",
                                233.15 * drone::unit::kelvin, /* -40 °C */
                                358.15 * drone::unit::kelvin, /* +85 °C */
                                0.1    * drone::unit::kelvin,
