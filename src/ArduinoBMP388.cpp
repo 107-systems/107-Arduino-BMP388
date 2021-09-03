@@ -26,11 +26,23 @@ using namespace BMP388;
 ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
                              SpiDeselectFunc deselect,
                              SpiTransferFunc transfer,
-                             OnSensorDataFunc on_sensor_data)
-: _io{select, deselect, transfer}
+                             OnPressureDataUpdateFunc on_pressure_data_update,
+                             OnTemperatureDataUpdateFunc on_temperature_data_update)
+: drone::PressureSensorBase("BMP388/pressure",
+                            300.0  * drone::unit::pascal,
+                            1250.0 * drone::unit::pascal,
+                            1.0    * drone::unit::pascal,
+                            0.0    * drone::unit::hertz,
+                            on_pressure_data_update)
+, drone::TemperatureSensorBase("BMP388/temperature",
+                               233.15 * drone::unit::kelvin, /* -40 °C */
+                               358.15 * drone::unit::kelvin, /* +85 °C */
+                               0.1    * drone::unit::kelvin,
+                               0.0    * drone::unit::hertz,
+                               on_temperature_data_update)
+, _io{select, deselect, transfer}
 , _config{_io}
 , _control{_io}
-, _on_sensor_data{on_sensor_data}
 {
 
 }
@@ -50,6 +62,7 @@ void ArduinoBMP388::begin(OutputDataRate const odr)
   _config.configPressureOversampling(PressureOversampling::x32);
   _config.configTemperatureOversampling(TemperatureOversampling::x2);
   _config.configOutputDataRate(odr);
+  setSensorUpdateRate(odr);
 
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
   _config.configIntPinLevel(IntPinLevel::ActiveLow);
@@ -72,31 +85,43 @@ void ArduinoBMP388::onExternalEventHandler()
 
     readSensorData(pressure_hpa, temperature_deg);
 
-    if (_on_sensor_data)
-      _on_sensor_data(pressure_hpa, temperature_deg);
+    _pressure = pressure_hpa * 100.0 * drone::unit::pascal;
+    _temperature = (temperature_deg + 273.15) * drone::unit::kelvin;
+
+    drone::PressureSensorBase::onSensorValueUpdate(_pressure);
+    drone::TemperatureSensorBase::onSensorValueUpdate(_temperature);
   }
 }
 
-double ArduinoBMP388::convertPressureToAltitude(double const pressure_hpa)
+drone::unit::Length ArduinoBMP388::convertPressureToAltitude(drone::unit::Pressure const pressure)
 {
   /* This formula assumes the international standard atmosphere (standard
    * temperature 15 °C = 288.15 K, static pressure = 1013.25 hPa, standard
    * temperature lapse rate 0.65 K / 100 m) and can be considered valid up
    * until 11 km.
    */
-  static double constexpr Tb  = 218.15;  /* [Tb] = K   */
-  static double constexpr Lb  = 0.0065;  /* [lB] = K/m */
-  static double constexpr Pb  = 1013.25; /* [pB] = hPa */
-  static double constexpr exp = 1.0 / 5.255;
-  static double constexpr fac = Tb / Lb;
+  static auto constexpr Tb  = 218.15 * drone::unit::kelvin;
+  static auto constexpr Lb  = 0.0065 * drone::unit::kelvin / drone::unit::meter;
+  static auto constexpr Pb  = 1013.25 * 100.0 * drone::unit::pascal;
+  static auto constexpr exp = 1.0 / 5.255;
+  static auto constexpr fac = Tb / Lb;
 
-  double const altitude_m = fac * (1 - pow((pressure_hpa / Pb), exp));
+  drone::unit::Length const altitude_m = fac * (1 - pow((pressure / Pb), exp));
+
   return altitude_m;
 }
 
 uint8_t ArduinoBMP388::getChipId(void)
 {
   return _io.read(Register::CHIP_ID);
+}
+
+size_t ArduinoBMP388::printTo(Print & p) const
+{
+  size_t n = 0;
+  n += drone::PressureSensorBase::printTo(p);
+  n += drone::TemperatureSensorBase::printTo(p);
+  return n;
 }
 
 /**************************************************************************************
@@ -113,4 +138,36 @@ void ArduinoBMP388::readSensorData(double & pressure_hpa, double & temperature_d
 
   pressure_hpa    = compensateRawPressure   (raw_pressure, temperature_deg, _quant_calib_data) / 100.0f;
   temperature_deg = compensateRawTemperature(raw_temperature, _quant_calib_data);
+}
+
+void ArduinoBMP388::setSensorUpdateRate(BMP388::OutputDataRate const odr)
+{
+  auto fn = [this](drone::unit::Frequency const update_rate)
+            {
+              drone::PressureSensorBase::setUpdateRate(update_rate);
+              drone::TemperatureSensorBase::setUpdateRate(update_rate);
+            };
+
+  switch(odr)
+  {
+    case BMP388::OutputDataRate::ODR_200_Hz    : fn(200.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_100_Hz    : fn(100.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_50_Hz     : fn( 50.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_25_Hz     : fn( 25.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_12_5_Hz   : fn( 12.50   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_6_25_Hz   : fn(  6.25   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_3_1_Hz    : fn(  3.10   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_1_5_Hz    : fn(  1.50   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_78_Hz   : fn(  0.78   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_39_Hz   : fn(  0.39   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_2_Hz    : fn(  0.20   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_1_Hz    : fn(  0.10   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_05_Hz   : fn(  0.05   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_02_Hz   : fn(  0.02   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_01_Hz   : fn(  0.01   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_006_Hz  : fn(  0.006  * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_003_Hz  : fn(  0.003  * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_0015_Hz : fn(  0.0015 * drone::unit::hertz); break;
+    default                                    : fn(  0.0000 * drone::unit::hertz); break;
+  }
 }
