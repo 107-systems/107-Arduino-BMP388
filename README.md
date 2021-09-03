@@ -22,7 +22,7 @@ This library works for
 ## Example
 ```C++
 #include <SPI.h>
-#include <ArduinoBMP388.h>
+#include <107-Arduino-BMP388.h>
 /* ... */
 static int const BMP388_CS_PIN  = 2;
 static int const BMP388_INT_PIN = 6;

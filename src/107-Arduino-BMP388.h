@@ -5,8 +5,8 @@
  * Contributors: https://github.com/107-systems/107-Arduino-BMP388/graphs/contributors.
  */
 
-#ifndef ARDUINO_BMP388_H_
-#define ARDUINO_BMP388_H_
+#ifndef _107_ARDUINO_BMP388_H_
+#define _107_ARDUINO_BMP388_H_
 
 /**************************************************************************************
  * INCLUDE
@@ -87,4 +87,4 @@ private:
 
 } /* drone */
 
-#endif /* ARDUINO_BMP388_H_ */
+#endif /* _107_ARDUINO_BMP388_H_ */
