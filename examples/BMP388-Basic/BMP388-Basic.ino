@@ -8,7 +8,7 @@
 
 #include <SPI.h>
 
-#include <ArduinoBMP388.h>
+#include <107-Arduino-BMP388.h>
 
 /**************************************************************************************
  * CONSTANTS

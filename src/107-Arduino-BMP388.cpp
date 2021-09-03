@@ -9,7 +9,7 @@
  * INCLUDE
  **************************************************************************************/
 
-#include "ArduinoBMP388.h"
+#include "107-Arduino-BMP388.h"
 
 #include <math.h>
 
