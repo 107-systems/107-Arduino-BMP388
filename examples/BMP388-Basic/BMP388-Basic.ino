@@ -18,20 +18,26 @@ static int const BMP388_CS_PIN  = 2;
 static int const BMP388_INT_PIN = 6;
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+using namespace drone;
+
+/**************************************************************************************
  * GLOBAL VARIABLES
  **************************************************************************************/
 
 ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
                      [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
                      [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
-                     [](drone::unit::Pressure const pressure)
+                     [](unit::Pressure const pressure)
                      {
                          Serial.print(pressure.value() / 100.0);
                          Serial.print(" hPa / ");
                          Serial.print(ArduinoBMP388::convertPressureToAltitude(pressure).value());
                          Serial.println(" m");
                      },
-                     [](drone::unit::Temperature const temperature)
+                     [](unit::Temperature const temperature)
                      {
                          Serial.print(temperature.value() + 273.15);
                          Serial.println(" °C");

@@ -27,20 +27,23 @@ This library works for
 static int const BMP388_CS_PIN  = 2;
 static int const BMP388_INT_PIN = 6;
 /* ... */
-void onSensorData(double const pressure_hpa, double const temperature_deg)
-{
-  Serial.print(pressure_hpa);
-  Serial.print(" hPa / ");
-  Serial.print(temperature_deg);
-  Serial.print(" °C / ");
-  Serial.print(ArduinoBMP388::convertPressureToAltitude(pressure_hpa));
-  Serial.println(" m");
-}
+using namespace drone;
 /* ... */
 ArduinoBMP388 bmp388([](){ digitalWrite(BMP388_CS_PIN, LOW); },
                      [](){ digitalWrite(BMP388_CS_PIN, HIGH); },
                      [](uint8_t const d) -> uint8_t { return SPI.transfer(d); },
-                     onSensorData);
+                     [](unit::Pressure const pressure)
+                     {
+                         Serial.print(pressure.value() / 100.0);
+                         Serial.print(" hPa / ");
+                         Serial.print(ArduinoBMP388::convertPressureToAltitude(pressure).value());
+                         Serial.println(" m");
+                     },
+                     [](unit::Temperature const temperature)
+                     {
+                         Serial.print(temperature.value() + 273.15);
+                         Serial.println(" °C");
+                     });
 /* ... */
 void setup()
 {
