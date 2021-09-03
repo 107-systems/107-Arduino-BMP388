@@ -1,5 +1,5 @@
 /**
- * @brief Get Chip-ID of BMP388 using of 107-Arduino-BMP388 library.
+ * @brief Demonstrate how to directly interface with the BMP388 using of 107-Arduino-BMP388 library.
  */
 
 /**************************************************************************************
@@ -41,12 +41,11 @@ void setup()
   pinMode(BMP388_CS_PIN, OUTPUT);
   digitalWrite(BMP388_CS_PIN, HIGH);
 
-  /* Get BMP388 Chip ID*/
-  Serial.println("The Chip-ID should be 0x50!");
-
-  uint8_t const chip_id = bmp388.getChipId();
+  /* REead BMP388 Chip ID*/
   Serial.print("Chip-ID: 0x");
-  Serial.println(chip_id, HEX);
+  Serial.print(bmp388.io().read(BMP388::Register::CHIP_ID), HEX);
+  Serial.print(" (expected: 0x50)");
+  Serial.println();
 }
 
 void loop()

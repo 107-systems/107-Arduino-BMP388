@@ -48,14 +48,16 @@ public:
 
   void onExternalEventHandler();
 
+
   static drone::unit::Length convertPressureToAltitude(drone::unit::Pressure const pressure);
 
-  uint8_t getChipId(void);
-
-  virtual void get(drone::unit::Pressure & p) const override { p = _pressure; }
-  virtual void get(drone::unit::Temperature & t) const override { t = _temperature; }
-
+  virtual void get      (drone::unit::Pressure & p) const override { p = _pressure; }
+  virtual void get      (drone::unit::Temperature & t) const override { t = _temperature; }
   virtual size_t printTo(Print & p) const override;
+
+
+  inline BMP388::BMP388_Io & io() { return _io; }
+
 
 private:
 
