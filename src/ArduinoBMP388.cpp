@@ -111,11 +111,6 @@ drone::unit::Length ArduinoBMP388::convertPressureToAltitude(drone::unit::Pressu
   return altitude_m;
 }
 
-uint8_t ArduinoBMP388::getChipId(void)
-{
-  return _io.read(Register::CHIP_ID);
-}
-
 size_t ArduinoBMP388::printTo(Print & p) const
 {
   size_t n = 0;
