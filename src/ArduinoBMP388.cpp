@@ -62,6 +62,7 @@ void ArduinoBMP388::begin(OutputDataRate const odr)
   _config.configPressureOversampling(PressureOversampling::x32);
   _config.configTemperatureOversampling(TemperatureOversampling::x2);
   _config.configOutputDataRate(odr);
+  setSensorUpdateRate(odr);
 
   _config.configIntPinOutputType(IntPinOutputType::OpenDrain);
   _config.configIntPinLevel(IntPinLevel::ActiveLow);
@@ -137,4 +138,36 @@ void ArduinoBMP388::readSensorData(double & pressure_hpa, double & temperature_d
 
   pressure_hpa    = compensateRawPressure   (raw_pressure, temperature_deg, _quant_calib_data) / 100.0f;
   temperature_deg = compensateRawTemperature(raw_temperature, _quant_calib_data);
+}
+
+void ArduinoBMP388::setSensorUpdateRate(BMP388::OutputDataRate const odr)
+{
+  auto fn = [this](drone::unit::Frequency const update_rate)
+            {
+              drone::PressureSensorBase::setUpdateRate(update_rate);
+              drone::TemperatureSensorBase::setUpdateRate(update_rate);
+            };
+
+  switch(odr)
+  {
+    case BMP388::OutputDataRate::ODR_200_Hz    : fn(200.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_100_Hz    : fn(100.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_50_Hz     : fn( 50.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_25_Hz     : fn( 25.00   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_12_5_Hz   : fn( 12.50   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_6_25_Hz   : fn(  6.25   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_3_1_Hz    : fn(  3.10   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_1_5_Hz    : fn(  1.50   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_78_Hz   : fn(  0.78   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_39_Hz   : fn(  0.39   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_2_Hz    : fn(  0.20   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_1_Hz    : fn(  0.10   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_05_Hz   : fn(  0.05   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_02_Hz   : fn(  0.02   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_01_Hz   : fn(  0.01   * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_006_Hz  : fn(  0.006  * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_003_Hz  : fn(  0.003  * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_0015_Hz : fn(  0.0015 * drone::unit::hertz); break;
+    default                                    : fn(  0.0000 * drone::unit::hertz); break;
+  }
 }
