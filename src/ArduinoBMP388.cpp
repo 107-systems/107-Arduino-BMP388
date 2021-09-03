@@ -17,6 +17,9 @@
  * NAMESPACE
  **************************************************************************************/
 
+namespace drone
+{
+
 using namespace BMP388;
 
 /**************************************************************************************
@@ -28,18 +31,18 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
                              SpiTransferFunc transfer,
                              OnPressureDataUpdateFunc on_pressure_data_update,
                              OnTemperatureDataUpdateFunc on_temperature_data_update)
-: drone::PressureSensorBase("BMP388/pressure",
-                            300.0  * drone::unit::pascal,
-                            1250.0 * drone::unit::pascal,
-                            1.0    * drone::unit::pascal,
-                            0.0    * drone::unit::hertz,
-                            on_pressure_data_update)
-, drone::TemperatureSensorBase("BMP388/temperature",
-                               233.15 * drone::unit::kelvin, /* -40 °C */
-                               358.15 * drone::unit::kelvin, /* +85 °C */
-                               0.1    * drone::unit::kelvin,
-                               0.0    * drone::unit::hertz,
-                               on_temperature_data_update)
+: PressureSensorBase("BMP388/pressure",
+                     300.0  * unit::pascal,
+                     1250.0 * unit::pascal,
+                     1.0    * unit::pascal,
+                     0.0    * unit::hertz,
+                     on_pressure_data_update)
+, TemperatureSensorBase("BMP388/temperature",
+                        233.15 * unit::kelvin, /* -40 °C */
+                        358.15 * unit::kelvin, /* +85 °C */
+                        0.1    * unit::kelvin,
+                        0.0    * unit::hertz,
+                        on_temperature_data_update)
 , _io{select, deselect, transfer}
 , _config{_io}
 , _control{_io}
@@ -85,28 +88,28 @@ void ArduinoBMP388::onExternalEventHandler()
 
     readSensorData(pressure_hpa, temperature_deg);
 
-    _pressure = pressure_hpa * 100.0 * drone::unit::pascal;
-    _temperature = (temperature_deg + 273.15) * drone::unit::kelvin;
+    _pressure = pressure_hpa * 100.0 * unit::pascal;
+    _temperature = (temperature_deg + 273.15) * unit::kelvin;
 
-    drone::PressureSensorBase::onSensorValueUpdate(_pressure);
-    drone::TemperatureSensorBase::onSensorValueUpdate(_temperature);
+    PressureSensorBase::onSensorValueUpdate(_pressure);
+    TemperatureSensorBase::onSensorValueUpdate(_temperature);
   }
 }
 
-drone::unit::Length ArduinoBMP388::convertPressureToAltitude(drone::unit::Pressure const pressure)
+unit::Length ArduinoBMP388::convertPressureToAltitude(unit::Pressure const pressure)
 {
   /* This formula assumes the international standard atmosphere (standard
    * temperature 15 °C = 288.15 K, static pressure = 1013.25 hPa, standard
    * temperature lapse rate 0.65 K / 100 m) and can be considered valid up
    * until 11 km.
    */
-  static auto constexpr Tb  = 218.15 * drone::unit::kelvin;
-  static auto constexpr Lb  = 0.0065 * drone::unit::kelvin / drone::unit::meter;
-  static auto constexpr Pb  = 1013.25 * 100.0 * drone::unit::pascal;
+  static auto constexpr Tb  = 218.15 * unit::kelvin;
+  static auto constexpr Lb  = 0.0065 * unit::kelvin / unit::meter;
+  static auto constexpr Pb  = 1013.25 * 100.0 * unit::pascal;
   static auto constexpr exp = 1.0 / 5.255;
   static auto constexpr fac = Tb / Lb;
 
-  drone::unit::Length const altitude_m = fac * (1 - pow((pressure / Pb), exp));
+  unit::Length const altitude_m = fac * (1 - pow((pressure / Pb), exp));
 
   return altitude_m;
 }
@@ -114,8 +117,8 @@ drone::unit::Length ArduinoBMP388::convertPressureToAltitude(drone::unit::Pressu
 size_t ArduinoBMP388::printTo(Print & p) const
 {
   size_t n = 0;
-  n += drone::PressureSensorBase::printTo(p);
-  n += drone::TemperatureSensorBase::printTo(p);
+  n += PressureSensorBase::printTo(p);
+  n += TemperatureSensorBase::printTo(p);
   return n;
 }
 
@@ -137,32 +140,38 @@ void ArduinoBMP388::readSensorData(double & pressure_hpa, double & temperature_d
 
 void ArduinoBMP388::setSensorUpdateRate(BMP388::OutputDataRate const odr)
 {
-  auto fn = [this](drone::unit::Frequency const update_rate)
+  auto fn = [this](unit::Frequency const update_rate)
             {
-              drone::PressureSensorBase::setUpdateRate(update_rate);
-              drone::TemperatureSensorBase::setUpdateRate(update_rate);
+              PressureSensorBase::setUpdateRate(update_rate);
+              TemperatureSensorBase::setUpdateRate(update_rate);
             };
 
   switch(odr)
   {
-    case BMP388::OutputDataRate::ODR_200_Hz    : fn(200.00   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_100_Hz    : fn(100.00   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_50_Hz     : fn( 50.00   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_25_Hz     : fn( 25.00   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_12_5_Hz   : fn( 12.50   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_6_25_Hz   : fn(  6.25   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_3_1_Hz    : fn(  3.10   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_1_5_Hz    : fn(  1.50   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_78_Hz   : fn(  0.78   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_39_Hz   : fn(  0.39   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_2_Hz    : fn(  0.20   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_1_Hz    : fn(  0.10   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_05_Hz   : fn(  0.05   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_02_Hz   : fn(  0.02   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_01_Hz   : fn(  0.01   * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_006_Hz  : fn(  0.006  * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_003_Hz  : fn(  0.003  * drone::unit::hertz); break;
-    case BMP388::OutputDataRate::ODR_0_0015_Hz : fn(  0.0015 * drone::unit::hertz); break;
-    default                                    : fn(  0.0000 * drone::unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_200_Hz    : fn(200.00   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_100_Hz    : fn(100.00   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_50_Hz     : fn( 50.00   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_25_Hz     : fn( 25.00   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_12_5_Hz   : fn( 12.50   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_6_25_Hz   : fn(  6.25   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_3_1_Hz    : fn(  3.10   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_1_5_Hz    : fn(  1.50   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_78_Hz   : fn(  0.78   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_39_Hz   : fn(  0.39   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_2_Hz    : fn(  0.20   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_1_Hz    : fn(  0.10   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_05_Hz   : fn(  0.05   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_02_Hz   : fn(  0.02   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_01_Hz   : fn(  0.01   * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_006_Hz  : fn(  0.006  * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_003_Hz  : fn(  0.003  * unit::hertz); break;
+    case BMP388::OutputDataRate::ODR_0_0015_Hz : fn(  0.0015 * unit::hertz); break;
+    default                                    : fn(  0.0000 * unit::hertz); break;
   }
 }
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* drone */

@@ -24,16 +24,23 @@
 #include "BMP388/BMP388_Convert.h"
 
 /**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+namespace drone
+{
+
+/**************************************************************************************
  * CLASS DECLARATION
  **************************************************************************************/
 
-class ArduinoBMP388 : virtual public drone::PressureSensorBase,
-                      virtual public drone::TemperatureSensorBase
+class ArduinoBMP388 : virtual public PressureSensorBase,
+                      virtual public TemperatureSensorBase
 {
 public:
 
-  typedef std::function<void(drone::unit::Pressure const)> OnPressureDataUpdateFunc;
-  typedef std::function<void(drone::unit::Temperature const)> OnTemperatureDataUpdateFunc;
+  typedef std::function<void(unit::Pressure const)> OnPressureDataUpdateFunc;
+  typedef std::function<void(unit::Temperature const)> OnTemperatureDataUpdateFunc;
 
 
   ArduinoBMP388(BMP388::SpiSelectFunc select,
@@ -49,10 +56,10 @@ public:
   void onExternalEventHandler();
 
 
-  static drone::unit::Length convertPressureToAltitude(drone::unit::Pressure const pressure);
+  static unit::Length convertPressureToAltitude(unit::Pressure const pressure);
 
-  virtual void get      (drone::unit::Pressure & p) const override { p = _pressure; }
-  virtual void get      (drone::unit::Temperature & t) const override { t = _temperature; }
+  virtual void get      (unit::Pressure & p) const override { p = _pressure; }
+  virtual void get      (unit::Temperature & t) const override { t = _temperature; }
   virtual size_t printTo(Print & p) const override;
 
 
@@ -64,8 +71,8 @@ private:
   BMP388::BMP388_Io _io;
   BMP388::BMP388_Config _config;
   BMP388::BMP388_Control _control;
-  drone::unit::Pressure _pressure;
-  drone::unit::Temperature _temperature;
+  unit::Pressure _pressure;
+  unit::Temperature _temperature;
 
   BMP388::QuantizedCalibrationData _quant_calib_data;
 
@@ -73,5 +80,11 @@ private:
   void setSensorUpdateRate(BMP388::OutputDataRate const odr);
 
 };
+
+/**************************************************************************************
+ * NAMESPACE
+ **************************************************************************************/
+
+} /* drone */
 
 #endif /* ARDUINO_BMP388_H_ */
