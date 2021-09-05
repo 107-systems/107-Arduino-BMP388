@@ -34,13 +34,11 @@ ArduinoBMP388::ArduinoBMP388(SpiSelectFunc select,
 : PressureSensorBase("BMP388/pressure",
                      300.0  * unit::pascal,
                      1250.0 * unit::pascal,
-                     1.0    * unit::pascal,
                      0.0    * unit::hertz,
                      on_pressure_data_update)
 , TemperatureSensorBase("BMP388/temperature",
                         233.15 * unit::kelvin, /* -40 °C */
                         358.15 * unit::kelvin, /* +85 °C */
-                        0.1    * unit::kelvin,
                         0.0    * unit::hertz,
                         on_temperature_data_update)
 , _io{select, deselect, transfer}
