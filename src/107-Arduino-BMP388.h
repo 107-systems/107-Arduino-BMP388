@@ -58,8 +58,8 @@ public:
 
   static unit::Length convertPressureToAltitude(unit::Pressure const pressure);
 
-  virtual void get      (unit::Pressure & p) const override { p = _pressure; }
-  virtual void get      (unit::Temperature & t) const override { t = _temperature; }
+  virtual void get      (unit::Pressure & p) override { p = _pressure; }
+  virtual void get      (unit::Temperature & t) override { t = _temperature; }
   virtual size_t printTo(Print & p) const override;
 
 
