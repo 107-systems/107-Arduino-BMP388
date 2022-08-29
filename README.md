@@ -9,7 +9,7 @@
 [![Spell Check](https://github.com/107-systems/107-Arduino-BMP388/workflows/Spell%20Check/badge.svg)](https://github.com/107-systems/107-Arduino-BMP388/actions?workflow=Spell+Check)
 
 <p align="center">
-  <a href="https://github.com/107-systems/107-Arduino-DroneCore"><img src="https://github.com/107-systems/.github/raw/main/logo/viper.jpg" width="40%"></a>
+  <a href="https://github.com/107-systems/viper"><img src="https://github.com/107-systems/.github/raw/main/logo/viper.jpg" width="40%"></a>
 </p>
 
 Arduino library for interfacing with the BMP388 barometric pressure sensor which can be used for inferring altitude information.
