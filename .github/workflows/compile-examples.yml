@@ -11,6 +11,11 @@ on:
       - ".github/workflows/compile-examples.yml"
       - "examples/**"
       - "src/**"
+  schedule:
+    # Run every Tuesday at 8 AM UTC to catch breakage caused by changes to external resources (libraries, platforms).
+    - cron: "0 8 * * TUE"
+  workflow_dispatch:
+  repository_dispatch:
 
 jobs:
   build:
@@ -32,58 +37,75 @@ jobs:
           - fqbn: arduino:samd:mkr1000
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkr1000
           - fqbn: arduino:samd:mkrzero
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrzero
           - fqbn: arduino:samd:mkrwifi1010
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrwifi1010
           - fqbn: arduino:samd:mkrfox1200
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrfox1200
           - fqbn: arduino:samd:mkrwan1300
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrwan1300
           - fqbn: arduino:samd:mkrwan1310
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrwan1310
           - fqbn: arduino:samd:mkrgsm1400
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrgsm1400
           - fqbn: arduino:samd:mkrnb1500
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrnb1500
           - fqbn: arduino:samd:mkrvidor4000
             platforms: |
               - name: arduino:samd
+            artifact-name-suffix: arduino-samd-mkrvidor4000
           - fqbn: arduino:mbed_portenta:envie_m7
             platforms: |
               - name: arduino:mbed_portenta
+            artifact-name-suffix: arduino-mbed_portenta-envie_m7
           - fqbn: arduino:mbed_portenta:envie_m7:target_core=cm4
             platforms: |
               - name: arduino:mbed_portenta
+            artifact-name-suffix: arduino-mbed_portenta-envie_m7-target_core-cm4
           - fqbn: arduino:mbed_nano:nano33ble
             platforms: |
               - name: arduino:mbed_nano
+            artifact-name-suffix: arduino-mbed_nano-nano33ble
           - fqbn: arduino:mbed_nano:nanorp2040connect
             platforms: |
               - name: arduino:mbed_nano
+            artifact-name-suffix: arduino-mbed_nano-nanorp2040connect
           - fqbn: arduino:mbed_edge:edge_control
             platforms: |
               - name: arduino:mbed_edge
+            artifact-name-suffix: arduino-mbed_edge-edge_control
           - fqbn: esp32:esp32:esp32
             platforms: |
               - name: esp32:esp32
                 source-url: https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+            artifact-name-suffix: esp32-esp32-esp32
           - fqbn: arduino:renesas_portenta:portenta_c33
             platforms: |
               - name: arduino:renesas_portenta
+            artifact-name-suffix: arduino-renesas_portenta-portenta_c33
           - fqbn: arduino:renesas_uno:minima
             platforms: |
               - name: arduino:renesas_uno
+            artifact-name-suffix: arduino-renesas_uno-minima
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install ESP32 platform dependencies
@@ -91,7 +113,7 @@ jobs:
         run: pip3 install pyserial
 
       - name: Compile examples
-        uses: arduino/compile-sketches@main
+        uses: arduino/compile-sketches@v1
         with:
           fqbn: ${{ matrix.board.fqbn }}
           platforms: ${{ matrix.board.platforms }}
@@ -100,9 +122,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           sketches-report-path: ${{ env.SKETCHES_REPORTS_PATH }}
 
-      - name: Save memory usage change report as artifact
-        if: github.event_name == 'pull_request'
+      - name: Save sketches report as workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.SKETCHES_REPORTS_PATH }}
+          if-no-files-found: error
           path: ${{ env.SKETCHES_REPORTS_PATH }}
+          name: sketches-report-${{ matrix.board.artifact-name-suffix }}
